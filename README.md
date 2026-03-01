@@ -2,43 +2,43 @@
 mpv播放器的中文版统计信息脚本
 
 步骤 1：编辑主配置文件
-Step 1: Edit the Main Configuration File
+步骤 1：编辑主配置文件
 
 在你的 mpv.conf 文件中，添加或确认以下一行。这行代码会关闭 mpv 内置的英文版统计脚本，为我们的中文版脚本让路。
-In your mpv.conf file, add or ensure the following line is present. This disables the built-in English stats script to make way for our Chinese version.
+在你的mpv.conf文件中，添加或确保有以下行。这将禁用内置的英语统计脚本，以便为我们的中文版本让路。
 
-ini
+这
 # 关闭内置统计脚本 [stats.lua] (默认启用)，以使用外部中文版
-# Disable the built-in stats script [stats.lua] (enabled by default) to use the external Chinese version
-load-stats-overlay=no
+# 禁用内置的统计脚本 [stats.lua] （默认启用）以使用外部中文版本
+加载统计覆盖=否
 
 步骤 2：放置中文版脚本
-Step 2: Place the Chinese Script
+步骤 2: 放置中文文本
 
 将我们翻译好的 stats.lua 文件，放入 mpv 的脚本文件夹中。
-Put our translated stats.lua file into mpv's scripts folder.
+将我们的翻译 stats.lua 文件放入 mpv 的 scripts 文件夹。
 
-目标位置 / Destination:
+目标位置 / 目的地:
 portable_config/scripts/
 
-绝对路径示例 / Absolute path example:
+绝对路径示例
 
-Windows: C:\Users\你的用户名\AppData\Roaming\mpv\scripts\
+Windows: C:\Users\你的用户名\AppData\Roaming\mpv\scripts
 
 Linux/macOS: ~/.config/mpv/scripts/
 
 步骤 3：开始享用
-Step 3: Enjoy!
+步骤 3：享受吧！
 
 完成以上两步，你的配置就大功告成了！现在，无论你使用的基础综合配置是什么，都可以：
-Once these two steps are done, your setup is complete! Now, regardless of the base comprehensive config you're using, you can:
+完成这两个步骤后，您的设置就完成了！现在，无论您使用的是什么基础综合配置，您都可以：
 
 按 i 键：临时查看全中文的播放统计信息。
-Press i: Temporarily view the playback statistics in full Chinese.
+按 i：暂时以中文查看播放统计。
 
 按 I (大写) 键：让统计信息常驻屏幕。
-Press Shift + I: Keep the statistics permanently on screen.
+按 Shift + I：将统计数据永久显示在屏幕上。
 
 按 1-5 或 0 键：在不同信息页面间切换。
-Press 1-5 or 0: Switch between different information pages.
+按1-5或0：在不同的信息页面之间切换。
 
