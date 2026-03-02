@@ -1,4 +1,7 @@
 
+https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua
+
+
 <img width="3837" height="2154" alt="微信图片_2026-03-01_112007_816" src="https://github.com/user-attachments/assets/34541caf-e934-4ef8-84f4-75fa6c37e707" />
 
 
