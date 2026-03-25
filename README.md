@@ -24,6 +24,5 @@
 
 ## 📥 预览
 
-</p>
+<img width="1880" height="1046" alt="ScreenShot_2026-03-25_160256_267" src="https://github.com/user-attachments/assets/e02da43b-53f2-43c6-bc67-b17dc6820a34" />
 
-</p>
