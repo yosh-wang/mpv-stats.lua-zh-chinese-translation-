@@ -4,7 +4,7 @@
 
 如果你在本项目中发现了安全漏洞，请 **不要** 在公开 issue 中报告。请通过以下方式私下联系维护者：
 
-- 发送邮件至：[yosh-wang@example.com]（请替换为你的邮箱）
+- 发送邮件至：yosh.wang@foxmail.com（请替换为你的邮箱）
 - 或通过 GitHub 私信联系 [@yosh-wang](https://github.com/yosh-wang)
 
 我们会在 7 个工作日内确认并评估问题，并尽力在 30 天内修复或给出回应。
