@@ -20,10 +20,10 @@
 ### 1. 禁用原版英文脚本
 在 mpv.conf 中添加一行：
 ``` ini 
-load-stats-overlay=no
+加载统计覆盖=否
 
 ## 📥 预览
 
-<p align="center">
-  <img width="600" alt="统计信息界面" src="screenshot.png">
+</p>
+
 </p>
