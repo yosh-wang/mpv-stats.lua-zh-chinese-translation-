@@ -44,4 +44,4 @@
 在你的``mpv.conf``文件中添加以下行：
 
 ``` ini 
-加载统计覆盖=否
+load-stats-overlay=no
