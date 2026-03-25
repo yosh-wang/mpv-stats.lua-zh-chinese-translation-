@@ -1,42 +1,23 @@
-# mpv 中文统计信息脚本 (stats.lua)
+# mpv 中文统计脚本 (stats.lua)
 
-本仓库是 mpv 播放器内置统计脚本 `stats.lua` 的中文翻译版本。  
-原版文件：[mpv-player/mpv/player/lua/stats.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/yosh-wang/mpv-stats-zh-or-mpv-stats-chinese-stats.lua)](https://github.com/yosh-wang/mpv-stats-zh-or-mpv-stats-chinese-stats.lua/releases)
+[![GitHub stars](https://img.shields.io/github/stars/yosh-wang/mpv-stats-zh-or-mpv-stats-chinese-stats.lua)](https://github.com/yosh-wang/mpv-stats-zh-or-mpv-stats-chinese-stats.lua/stargazers)
+[![GitHub license](https://img.shields.io/github/license/yosh-wang/mpv-stats-zh-or-mpv-stats-chinese-stats.lua)](https://github.com/yosh-wang/mpv-stats-zh-or-mpv-stats-chinese-stats.lua/blob/main/LICENSE)
+[![GitHub last commit](https://img.shields.io/github/last-commit/yosh-wang/mpv-stats-zh-or-mpv-stats-chinese-stats.lua)](https://github.com/yosh-wang/mpv-stats-zh-or-mpv-stats-chinese-stats.lua/commits/main)
 
-## 特性
-- 完全中文化的统计信息显示
-- 支持所有原版功能（性能数据、视频/音频信息、帧率、缓存等）
-- 兼容 mpv 所有版本（v0.35+）
+本项目是 mpv 播放器内置统计脚本 `stats.lua` 的**完整中文翻译版**。  
+原版英文文件位于：[mpv-player/mpv/player/lua/stats.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua)
 
-## 安装使用
+## ✨ 特性
+
+- **全中文界面**：所有统计信息、菜单选项、提示文字均翻译为中文
+- **功能完整**：与原版保持同步，支持所有快捷键和页面切换
+- **开箱即用**：简单两步安装，无需额外配置
+- **轻量高效**：单文件，不占用额外资源
+
+## 📥 安装
 
 ### 1. 禁用原版英文脚本
-在 mpv 配置文件 `mpv.conf` 中添加：
+在 `mpv.conf` 中添加一行：
+```ini
 load-stats-overlay=no
-
-
-
-### 2. 放置脚本
-将 `stats.lua` 放入 mpv 的脚本目录：
-- **便携版**：`mpv.exe` 同级目录下 `portable_config/scripts/`
-- **安装版**：`%APPDATA%\mpv\scripts\`
-
-### 3. 快捷键
-| 按键 | 功能 |
-|------|------|
-| `i` | 临时显示统计信息 |
-| `I` (大写) | 持续显示统计信息 |
-| `Shift+I` | 同 `I` |
-| `1`~`5` / `0` | 切换不同信息页面 |
-
-## 文件说明
-- `stats.lua` — 主脚本（中文版）
-- `LICENSE` — MIT 许可证
-- `README.md` — 本文件
-- `CHANGELOG.md` — 更新日志
-
-## 贡献
-欢迎提交翻译改进或功能增强。详见 [CONTRIBUTING.md](CONTRIBUTING.md)
-
-## 许可证
-本项目采用 MIT 许可证。原 mpv 项目采用 GPLv2+，本翻译脚本作为独立作品不继承其许可证。
