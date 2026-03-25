@@ -10,6 +10,7 @@
 > – 将 mpv 内置统计脚本 `stats.lua` 的所有界面、提示和菜单全部中文化，让你更轻松地查看播放信息。
 
 📄 [Original English file](https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua)  
+
 📄 [原版英文文件](https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua)
 
 ---
