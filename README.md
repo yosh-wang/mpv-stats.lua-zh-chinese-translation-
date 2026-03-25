@@ -5,7 +5,8 @@
 [![GitHub 许可证](https://img.shields.io/github/license/yosh-wang/mpv-stats-zh-or-mpv-stats-chinese-stats.lua)](https://github.com/yosh-wang/mpv-stats-zh-or-mpv-stats-chinese-stats.lua/blob/main/LICENSE)
 [![GitHub 最新提交](https://img.shields.io/github/last-commit/yosh-wang/mpv-stats-zh-or-mpv-stats-chinese-stats.lua)](https://github.com/yosh-wang/mpv-stats-zh-or-mpv-stats-chinese-stats.lua/commits/main)
 
-> **完整中文翻译版** – 将 mpv 内置统计脚本 `stats.lua` 的所有界面、提示和菜单全部中文化，让你更轻松地查看播放信息。
+> **完整中文翻译版**
+> – 将 mpv 内置统计脚本 `stats.lua` 的所有界面、提示和菜单全部中文化，让你更轻松地查看播放信息。
 
 原版英文文件：[mpv-player/mpv/player/lua/stats.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua)
 
