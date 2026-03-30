@@ -47,3 +47,4 @@
 <p align="center">
   <img width="600" alt="Stats interface" src="screenshot.png">
 </p>
+<img width="450" height="900" alt="screenshot" src="https://github.com/user-attachments/assets/2d4d3565-5952-44e9-b6fe-7e136363d29e" />
