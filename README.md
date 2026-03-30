@@ -12,9 +12,7 @@
 
 📄 原版英文文件：[stats.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua)  
 📄 Original English file：[stats.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua)  
-
 ---
-
 ## ✨ 特性 / Features
 
 - **中文界面** – 所有统计信息、菜单选项、按键提示均完整翻译  
@@ -25,19 +23,14 @@
   **Plug and play** – Simple two‑step installation, no extra configuration
 - **轻量高效** – 单文件，不占用额外资源  
   **Lightweight** – Single file, minimal overhead
-
 ---
-
 ## 📥 安装 / Installation
-
 
 **禁用内置英文脚本**  
 Disable the built‑in English script
 
-
 在你的 `mpv.conf` 文件中添加以下一行：  
 Add the following line to your `mpv.conf`:
-
 
 ```ini
 load-stats-overlay=no
