@@ -29,14 +29,6 @@
 
 ---
 
-## 📸 Preview / 预览
-
-<p align="center">
-  <img width="600" alt="Stats interface" src="screenshot.png">
-</p>
-
----
-
 ## 📥 Installation / 安装
 
 > **中文**：安装步骤
@@ -49,3 +41,14 @@ Add the following line to your `mpv.conf`:
 
 ```ini
 load-stats-overlay=no
+
+>
+---
+
+## 📸 Preview / 预览
+
+<p align="center">
+  <img width="600" alt="Stats interface" src="screenshot.png">
+</p>
+
+---
