@@ -566,9 +566,44 @@ local function get_kbinfo_lines()
     return info_lines
 end
 
+-- 内部性能信息翻译 - 自动处理 script/ 开头的名称
 local function append_general_perfdata(s)
+    -- 中文名称映射表
+    local name_map = {
+        -- 核心性能
+        ["poll-time"] = "轮询耗时",
+        ["demuxer/thread"] = "解封装器/线程",
+        ["main/iterations"] = "主循环/单次耗时",
+        ["main/thread"] = "主循环/线程",
+        ["osd/osd-render/cpu"] = "OSD渲染/CPU",
+        ["osd/osd-render/time"] = "OSD渲染/总耗时",   
+        ["osd/sub-render/cpu"] = "字幕渲染/CPU",
+        ["osd/sub-render/time"] = "字幕渲染/总耗时",  
+        
+        -- VO 相关
+        ["vo/iterations"] = "视频输出/单次耗时",
+        ["vo/video-draw/cpu"] = "视频输出/绘制/CPU",
+        ["vo/video-draw/time"] = "视频输出/绘制/总耗时",   
+        ["vo/video-flip/cpu"] = "视频输出/帧提交/CPU",
+        ["vo/video-flip/time"] = "视频输出/帧提交/总耗时", 
+    }
+    
+    
     for i, data in ipairs(mp.get_property_native("perf-info") or {}) do
-        append(s, data.text or data.value, {prefix="["..tostring(i).."] "..data.name..":"})
+        local display_name = name_map[data.name]
+        
+        -- 如果没有映射，自动处理 script/ 开头的名称
+        if not display_name then
+            if data.name:match("^script/") then
+                -- 去掉 script/ 前缀，显示为"脚本/原英文名"
+                local script_name = data.name:gsub("^script/", "")
+                display_name = "脚本/" .. script_name
+            else
+                display_name = data.name
+            end
+        end
+        
+        append(s, data.text or data.value, {prefix="["..tostring(i).."] "..display_name..":"})
 
         if o.plot_perfdata and o.use_ass and data.value then
             local buf = perf_buffers[data.name]
@@ -1469,12 +1504,12 @@ cache_recorder_timer:kill()
 -- Current page and <page key>:<page function> mapping
 curr_page = o.key_page_1
 pages = {
-    [o.key_page_1] = { idx = 1, f = default_stats, desc = "默认信息", },                -- EN: "Default"
-    [o.key_page_2] = { idx = 2, f = vo_stats, desc = "扩展帧耗时", scroll = true },    -- EN: "Extended Frame Timings"
-    [o.key_page_3] = { idx = 3, f = cache_stats, desc = "缓存统计", },                 -- EN: "Cache Statistics"
-    [o.key_page_4] = { idx = 4, f = keybinding_info, desc = "活动按键绑定", scroll = true }, -- EN: "Active Key Bindings"
-    [o.key_page_5] = { idx = 5, f = track_info, desc = "轨道信息", scroll = true },    -- EN: "Tracks Info"
-    [o.key_page_0] = { idx = 0, f = perf_stats, desc = "内部性能信息", scroll = true }, -- EN: "Internal Performance Info"
+    [o.key_page_1] = { idx = 1, f = default_stats, desc = "默认信息", },
+    [o.key_page_2] = { idx = 2, f = vo_stats, desc = "扩展帧耗时", scroll = true },
+    [o.key_page_3] = { idx = 3, f = cache_stats, desc = "缓存统计", },
+    [o.key_page_4] = { idx = 4, f = keybinding_info, desc = "活动按键绑定", scroll = true },
+    [o.key_page_5] = { idx = 5, f = track_info, desc = "轨道信息", scroll = true },
+    [o.key_page_0] = { idx = 0, f = perf_stats, desc = "内部性能信息", scroll = true },
 }
 
 
