@@ -51,4 +51,4 @@ load-stats-overlay=no
 <p align="center">
   <img width="900" alt="Stats interface" src="screenshot.png">
 <p align="center">
-<img width="450" height="900" alt="screenshot" src="https://github.com/user-attachments/assets/2d4d3565-5952-44e9-b6fe-7e136363d29e" />
+<img width="600" height="1000" alt="screenshot" src="https://github.com/user-attachments/assets/2d4d3565-5952-44e9-b6fe-7e136363d29e" />
