@@ -1,7 +1,5 @@
 # 🎬 mpv Chinese Stats Script (stats.lua)
 
-<div align="center">
-
 <!-- 第一行：社交互动核心指标 -->
 <a href="https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/stargazers"><img src="https://img.shields.io/github/stars/yosh-wang/mpv-stats.lua-zh-chinese-translation-" alt="GitHub stars"></a>
 <a href="https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/forks"><img src="https://img.shields.io/github/forks/yosh-wang/mpv-stats.lua-zh-chinese-translation-" alt="GitHub forks"></a>
