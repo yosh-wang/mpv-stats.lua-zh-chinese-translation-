@@ -1,11 +1,12 @@
 # 🎬 mpv Chinese Stats Script (stats.lua)
-
+---
 
 <!-- 第一行：社交互动核心指标 -->
 [![GitHub stars](https://img.shields.io/github/stars/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/forks)
 [![GitHub watchers](https://img.shields.io/github/watchers/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/watchers)
 
+---
 <!-- 第二行：版本发布与下载统计 -->
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases/latest)
 [![GitHub tag](https://img.shields.io/github/v/tag/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/tags)
@@ -39,6 +40,7 @@
 ![Translation](https://img.shields.io/badge/Translation-100%25-brightgreen)
 ![Chinese](https://img.shields.io/badge/语言-中文-red)
 
+---
 
 > **Fully translated Chinese version** of mpv's built-in stats script `stats.lua`.  
 > **完整中文翻译版**
