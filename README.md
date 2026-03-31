@@ -7,14 +7,13 @@
 
 <!-- 版本与下载 -->
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases/latest)
-[![GitHub release (latest by date including pre-releases)](https://img.shields.io/github/v/release/yosh-wang/mpv-stats.lua-zh-chinese-translation?include_prereleases)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases)
+[![GitHub release (including pre-releases)](https://img.shields.io/github/v/release/yosh-wang/mpv-stats.lua-zh-chinese-translation?include_prereleases)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases)
 [![GitHub tag](https://img.shields.io/github/v/tag/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/tags)
-[![GitHub downloads](https://img.shields.io/github/downloads/yosh-wang/mpv-stats.lua-zh-chinese-translation-/total)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases)
-[![GitHub downloads/latest](https://img.shields.io/github/downloads/yosh-wang/mpv-stats.lua-zh-chinese-translation-/latest)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases/latest)
+[![GitHub downloads (total)](https://img.shields.io/github/downloads/yosh-wang/mpv-stats.lua-zh-chinese-translation-/total)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases)
+[![GitHub downloads (latest)](https://img.shields.io/github/downloads/yosh-wang/mpv-stats.lua-zh-chinese-translation-/latest)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases/latest)
 
-<!-- 许可证 -->
-[![License MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE.md)
-[![GitHub license](https://img.shields.io/github/license/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE.md)
+<!-- 许可证（写死为MIT，不会显示not found） -->
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE)
 
 <!-- 提交活动 -->
 [![GitHub last commit](https://img.shields.io/github/last-commit/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/commits/main)
@@ -39,7 +38,7 @@
 [![GitHub code size](https://img.shields.io/github/languages/code-size/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-)
 [![GitHub file count](https://img.shields.io/github/directory-file-count/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-)
 
-<!-- 工作流与构建（会显示 not found） -->
+<!-- 工作流与构建（暂无数据，会显示 not found） -->
 [![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/yosh-wang/mpv-stats.lua-zh-chinese-translation-/main.yml?branch=main)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/actions)
 [![GitHub Workflow Status (event)](https://img.shields.io/github/actions/workflow/status/yosh-wang/mpv-stats.lua-zh-chinese-translation-/main.yml?event=push)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/actions)
 
@@ -62,12 +61,8 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/pulls)
 [![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red)](https://github.com/yosh-wang)
 
-<!-- LuaRocks（会显示 not found） -->
+<!-- LuaRocks（暂无数据，会显示 not found） -->
 [![LuaRocks](https://img.shields.io/luarocks/v/yosh-wang/mpv-stats.lua-zh-chinese-translation)](https://luarocks.org/modules/yosh-wang/mpv-stats.lua-zh-chinese-translation)
-
-<!-- ==================== 依赖与包管理 ==================== -->
-[![LuaRocks](https://img.shields.io/luarocks/v/yosh-wang/mpv-stats.lua-zh-chinese-translation)](https://luarocks.org/modules/yosh-wang/mpv-stats.lua-zh-chinese-translation)
-
 
 > **Fully translated Chinese version** of mpv's built-in stats script `stats.lua`.  
 > **完整中文翻译版**
