@@ -60,12 +60,21 @@ This script translates all interfaces, prompts, and menus of mpv's built-in `sta
 
 ## ✨ Features / 特性
 
-| Feature | Description |
-|:--------|:------------|
-| **🇨🇳 Chinese UI** | All stats, menus, and key hints are fully translated / 所有统计信息、菜单选项、按键提示均完整翻译 |
-| **🔄 Feature‑complete** | Synchronized with upstream, supports all hotkeys / 与原版保持同步，支持所有快捷键和页面切换 |
-| **⚡ Plug and play** | Two-step installation, no extra config / 两步安装，无需额外配置 |
-| **📦 Lightweight** | Single file, minimal resource usage / 单文件，不占用额外资源 |
+- **🇨🇳 Chinese UI / 中文界面**  
+  All stats, menus, and key hints are fully translated  
+  所有统计信息、菜单选项、按键提示均完整翻译
+
+- **🔄 Feature‑complete / 功能同步**  
+  Synchronized with upstream, supports all hotkeys  
+  与原版保持同步，支持所有快捷键和页面切换
+
+- **⚡ Plug and play / 即装即用**  
+  Two-step installation, no extra config  
+  两步安装，无需额外配置
+
+- **📦 Lightweight / 轻量高效**  
+  Single file, minimal resource usage  
+  单文件，不占用额外资源
 
 ---
 
