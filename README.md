@@ -162,61 +162,49 @@ load-stats-overlay=no
 
 ---
 
-## 📖 Project Overview / 项目简介
+## 📖 Project Overview
 
-> **Fully translated Chinese version** of mpv's built-in stats script `stats.lua`.  
-> **完整中文翻译版**
+> **Fully translated Chinese version** of mpv's built-in stats script `stats.lua`.
 
-This script translates all interfaces, prompts, and menus of mpv's built-in `stats.lua` into Chinese, making it easier to view playback information.  
-将 mpv 内置统计脚本 `stats.lua` 的所有界面、提示和菜单全部中文化，让你更轻松地查看播放信息。
+This script translates all interfaces, prompts, and menus of mpv's built-in `stats.lua` into Chinese, making it easier to view playback information.
 
-| Original / 原版 | Chinese Version / 中文版 |
-|:---------------:|:-----------------------:|
-| [stats.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua) | This project / 本项目 |
+| Original | Chinese Version |
+|:--------:|:---------------:|
+| [stats.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua) | This project |
 
 ---
 
-## ✨ Features / 特性
+## ✨ Features
 
-  🇨🇳 **Chinese UI** / 中文界面  
-       - All stats, menus, and key hints are fully translated  
-       - 所有统计信息、菜单选项、按键提示均完整翻译
-
-  🔄 **Feature‑complete** / 功能同步  
-        - Synchronized with upstream, supports all hotkeys  
-        - 与原版保持同步，支持所有快捷键和页面切换
-
-  ⚡ **Plug and play** / 即装即用  
-        - Two-step installation, no extra config  
-        - 两步安装，无需额外配置
-
-  📦 **Lightweight** / 轻量高效  
-         - Single file, minimal resource usage  
-         - 单文件，不占用额外资源
+| Feature | Description |
+|:--------|:------------|
+| **🇨🇳 Chinese UI** | All stats, menus, and key hints are fully translated |
+| **🔄 Feature‑complete** | Synchronized with upstream, supports all hotkeys |
+| **⚡ Plug and play** | Two-step installation, no extra config |
+| **📦 Lightweight** | Single file, minimal resource usage |
 
 ---
 
-## 📥 Installation / 安装
+## 📥 Installation
 
-### 1️⃣ Disable the built‑in script / 禁用内置英文脚本
+### 1️⃣ Disable the built‑in script
 
-Add the following line to your `mpv.conf`:  
-在你的 `mpv.conf` 文件中添加以下一行：
+Add the following line to your `mpv.conf`:
 
-    load-stats-overlay=no
+```ini
+load-stats-overlay=no
+```
 
-### 2️⃣ Install this script / 安装本脚本
+### 2️⃣ Install this script
 
 Copy `stats.lua` to mpv's scripts directory:  
-将 `stats.lua` 放入 mpv 的脚本目录：
-
   Windows   –  `%APPDATA%\mpv\scripts\`
   macOS     –  `~/.config/mpv/scripts/`
   Linux     –  `~/.config/mpv/scripts/`
   
 ---
 
-## 📸 Preview / 预览
+## 📸 Preview / 
 
 <div align="center">
   <img width="900" alt="Stats interface" src="screenshot.png">
@@ -226,9 +214,9 @@ Copy `stats.lua` to mpv's scripts directory:
 
 ---
 
-## 📜 License / 开源协议
+## 📜 License / 
 
 This project is released under the [MIT License](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE.md).  
-本项目基于 [MIT License](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE.md) 开源协议发布。
+
 
 
