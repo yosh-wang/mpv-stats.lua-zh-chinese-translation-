@@ -92,9 +92,9 @@ Add the following line to your `mpv.conf`:
 Copy `stats.lua` to mpv's scripts directory:  
 将 `stats.lua` 放入 mpv 的脚本目录：
 
-- **Windows**: `%APPDATA%\mpv\scripts\`
-- **macOS**: `~/.config/mpv/scripts/`
-- **Linux**: `~/.config/mpv/scripts/`
+  Windows   --  %APPDATA%\mpv\scripts\
+  macOS     --  ~/.config/mpv/scripts/
+  Linux     --  ~/.config/mpv/scripts/
 
 ---
 
