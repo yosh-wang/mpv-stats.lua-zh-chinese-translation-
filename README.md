@@ -60,21 +60,21 @@ This script translates all interfaces, prompts, and menus of mpv's built-in `sta
 
 ## ✨ Features / 特性
 
-- **🇨🇳 Chinese UI / 中文界面**  
-  All stats, menus, and key hints are fully translated  
-  所有统计信息、菜单选项、按键提示均完整翻译
+  🇨🇳 **Chinese UI** / 中文界面  
+       - All stats, menus, and key hints are fully translated  
+       - 所有统计信息、菜单选项、按键提示均完整翻译
 
-- **🔄 Feature‑complete / 功能同步**  
-  Synchronized with upstream, supports all hotkeys  
-  与原版保持同步，支持所有快捷键和页面切换
+  🔄 **Feature‑complete** / 功能同步  
+        - Synchronized with upstream, supports all hotkeys  
+        - 与原版保持同步，支持所有快捷键和页面切换
 
-- **⚡ Plug and play / 即装即用**  
-  Two-step installation, no extra config  
-  两步安装，无需额外配置
+  ⚡ **Plug and play** / 即装即用  
+        - Two-step installation, no extra config  
+        - 两步安装，无需额外配置
 
-- **📦 Lightweight / 轻量高效**  
-  Single file, minimal resource usage  
-  单文件，不占用额外资源
+  📦 **Lightweight** / 轻量高效  
+         - Single file, minimal resource usage  
+         - 单文件，不占用额外资源
 
 ---
 
@@ -92,9 +92,9 @@ Add the following line to your `mpv.conf`:
 Copy `stats.lua` to mpv's scripts directory:  
 将 `stats.lua` 放入 mpv 的脚本目录：
 
-  Windows   --  %APPDATA%\mpv\scripts\
-  macOS     --  ~/.config/mpv/scripts/
-  Linux     --  ~/.config/mpv/scripts/
+  - **Windows**   –  `%APPDATA%\mpv\scripts\`
+  - **macOS**     –  `~/.config/mpv/scripts/`
+  - **Linux**     –  `~/.config/mpv/scripts/`
 
 ---
 
