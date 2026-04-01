@@ -85,20 +85,16 @@ This script translates all interfaces, prompts, and menus of mpv's built-in `sta
 Add the following line to your `mpv.conf`:  
 在你的 `mpv.conf` 文件中添加以下一行：
 
-```ini
-load-stats-overlay=no
-```
+    load-stats-overlay=no
 
 ### 2️⃣ Install this script / 安装本脚本
 
 Copy `stats.lua` to mpv's scripts directory:  
 将 `stats.lua` 放入 mpv 的脚本目录：
 
-| Platform / 平台 | Path / 路径 |
-|:---------------|:------------|
-| **Windows** | `%APPDATA%\mpv\scripts\` |
-| **macOS** | `~/.config/mpv/scripts/` |
-| **Linux** | `~/.config/mpv/scripts/` |
+- **Windows**: `%APPDATA%\mpv\scripts\`
+- **macOS**: `~/.config/mpv/scripts/`
+- **Linux**: `~/.config/mpv/scripts/`
 
 ---
 
