@@ -42,9 +42,9 @@
 
 ## 📖 项目简介
 
-> **mpv 内置统计脚本 stats.lua 的完整中文翻译版**
+**mpv 内置统计脚本 stats.lua 的完整中文翻译版**
 
-> 将 mpv 内置统计脚本 `stats.lua` 的所有界面、提示和菜单全部中文化，让你更轻松地查看播放信息。
+将 mpv 内置统计脚本 `stats.lua` 的所有界面、提示和菜单全部中文化，让你更轻松地查看播放信息。
 
 | 原版文件 | 中文版 |
 |:--------:|:------:|
@@ -56,11 +56,13 @@
 
 本翻译版本始终保持与原版 `stats.lua` 同步。
 
-- **原版最新提交**: [`de0f2f9`](https://github.com/mpv-player/mpv/commit/de0f2f9) (2026年2月10日)
-- **更新内容**: `stats.lua: correctly override mp.input keybinds`
-- **翻译状态**: ✅ 已同步
+| 项目 | 信息 |
+|------|------|
+| 原版最新提交 | [`de0f2f9`](https://github.com/mpv-player/mpv/commit/de0f2f9) (2026年2月10日) |
+| 更新内容 | `stats.lua: correctly override mp.input keybinds` |
+| 翻译状态 | ✅ 已同步 |
 
-如需检查原版是否有更新，请访问：
+如需检查原版是否有更新，请访问：  
 👉 https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua
 
 ---
