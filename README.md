@@ -149,26 +149,17 @@ load-stats-overlay=no
 
 ---
 
-## 📖 Project Overview
+## 📖 Project Overview & 🔔 Sync Status
 
-> **Fully translated Chinese version** of mpv's built-in stats script `stats.lua`.
+**mpv stats.lua Full Chinese Translation** — All interfaces, prompts, and menus fully localized into Chinese.
 
-This script translates all interfaces, prompts, and menus of mpv's built-in `stats.lua` into Chinese, making it easier to view playback information.
-
-| Original | Chinese Version |
-|:--------:|:---------------:|
-| [stats.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua) | This project |
-
----
-
-## ✨ Features
-
-| Feature | Description |
-|:--------|:------------|
-| **🇨🇳 Chinese UI** | All stats, menus, and key hints are fully translated |
-| **🔄 Feature‑complete** | Synchronized with upstream, supports all hotkeys |
-| **⚡ Plug and play** | Two-step installation, no extra config |
-| **📦 Lightweight** | Single file, minimal resource usage |
+| Item | Information |
+|------|-------------|
+| Original File | [stats.lua](https://github.com/mpv-player/mpv/blob/master/player/lua/stats.lua) |
+| Chinese Version | This project |
+| Last Sync | [`de0f2f9`](https://github.com/mpv-player/mpv/commit/de0f2f9) (2026-02-10) |
+| Sync Content | `correctly override mp.input keybinds` |
+| Sync Status | ✅ Synced |
 
 ---
 
