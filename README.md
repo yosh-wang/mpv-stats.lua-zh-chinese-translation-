@@ -40,7 +40,7 @@
 
 ---
 
-## 📖 项目简介 & 🔔 更新提醒
+## 📖 项目简介 & 
 
 **mpv stats.lua 完整中文翻译版** — 所有界面、提示、菜单全部中文化。
 
@@ -149,7 +149,7 @@ load-stats-overlay=no
 
 ---
 
-## 📖 Project Overview & 🔔 Sync Status
+## 📖 Project Overview & 
 
 **mpv stats.lua Full Chinese Translation** — All interfaces, prompts, and menus fully localized into Chinese.
 
