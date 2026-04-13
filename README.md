@@ -64,7 +64,56 @@
 | **📦 轻量高效** | 单文件，不占用额外资源 |
 
 ---
+```markdown
+## 🧠 智能翻译模块 (Smart Translation Module)
 
+本项目除了提供直接修改的完整中文版外，还设计了一个可选的智能翻译模块，通过函数劫持技术实现动态翻译。
+
+### 模块特点
+
+| 特点 | 说明 |
+|:---:|------|
+| 🔌 非侵入式 | 不修改原版核心逻辑，通过劫持输出函数实现翻译 |
+| 🔄 易于同步 | 原版更新时，只需替换原版文件，翻译模块无需修改 |
+| 🎯 智能匹配 | 支持精确匹配和模糊匹配，提高翻译覆盖率 |
+| 📊 专业术语 | 针对 HDR、性能分析等专业术语进行了准确翻译 |
+| ⚡ 零开销 | 翻译仅在输出时执行，不影响播放性能 |
+
+### 技术实现
+
+```lua
+-- 核心翻译表，涵盖所有界面文本
+local translations = {
+    ["Default"] = "默认信息",
+    ["Extended Frame Timings"] = "扩展帧耗时",
+    ["Frame Rate:"] = "帧率:",
+    ["VSync Ratio:"] = "垂直同步比率:",
+    -- ... 更多翻译
+}
+
+-- 通过劫持 append 函数实现自动翻译
+local original_append = append
+append = function(s, str, attr)
+    str = auto_translate_text(str)
+    attr.prefix = auto_translate_text(attr.prefix)
+    return original_append(s, str, attr)
+end
+```
+
+### 翻译覆盖范围
+
+| 类别 | 覆盖内容 |
+|:---:|------|
+| ✅ 页面标题 | 所有 6 个统计页面 |
+| ✅ 音视频参数 | 编解码器、采样率、码率等 |
+| ✅ HDR 元数据 | PQ、MaxCLL、MaxFALL 等专业术语 |
+| ✅ 缓存状态 | 预读、速度、内存占用等 |
+| ✅ 按键绑定 | 界面提示和搜索功能 |
+| ✅ 性能分析 | `poll-time`、`vo/video-draw` 等内部指标 |
+| ✅ 轨道信息 | 语言、标志位、重放增益等 |
+
+
+---
 
 ## 📥 安装
 
