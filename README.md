@@ -79,27 +79,6 @@
 | 📊 专业术语 | 针对 HDR、性能分析等专业术语进行了准确翻译 |
 | ⚡ 零开销 | 翻译仅在输出时执行，不影响播放性能 |
 
-### 技术实现
-
-```lua
--- 核心翻译表，涵盖所有界面文本
-local translations = {
-    ["Default"] = "默认信息",
-    ["Extended Frame Timings"] = "扩展帧耗时",
-    ["Frame Rate:"] = "帧率:",
-    ["VSync Ratio:"] = "垂直同步比率:",
-    -- ... 更多翻译
-}
-
--- 通过劫持 append 函数实现自动翻译
-local original_append = append
-append = function(s, str, attr)
-    str = auto_translate_text(str)
-    attr.prefix = auto_translate_text(attr.prefix)
-    return original_append(s, str, attr)
-end
-```
-
 ### 翻译覆盖范围
 
 | 类别 | 覆盖内容 |
