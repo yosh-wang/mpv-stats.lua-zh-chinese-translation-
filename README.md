@@ -206,7 +206,6 @@ load-stats-overlay=no
   
 ---
 
-
 ## 📜 License / 
 
 This project is released under the [MIT License](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE.md).  
