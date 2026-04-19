@@ -38,6 +38,15 @@
 ![Translation](https://img.shields.io/badge/Translation-100%25-brightgreen)
 ![Chinese](https://img.shields.io/badge/语言-中文-red)
 
+<!-- 第六行：项目数据徽章 -->
+![GitHub Repo stars](https://img.shields.io/github/stars/yosh-wang/mpv-stats.lua-zh-chinese-translation-?style=flat-square)
+![GitHub forks](https://img.shields.io/github/forks/yosh-wang/mpv-stats.lua-zh-chinese-translation-?style=flat-square)
+![GitHub issues](https://img.shields.io/github/issues/yosh-wang/mpv-stats.lua-zh-chinese-translation-?style=flat-square)
+![GitHub watchers](https://img.shields.io/github/watchers/yosh-wang/mpv-stats.lua-zh-chinese-translation-?style=flat-square)
+![GitHub contributors](https://img.shields.io/github/contributors/yosh-wang/mpv-stats.lua-zh-chinese-translation-?style=flat-square)
+![GitHub license](https://img.shields.io/github/license/yosh-wang/mpv-stats.lua-zh-chinese-translation-?style=flat-square)
+
+
 ---
 
 ## 📖 项目简介 & 
