@@ -1992,6 +1992,10 @@ local function auto_translate_text(text)
         -- ==================== 帧率相关 ====================
         [" (specified)"] = " (指定)",
         [" (estimated)"] = " (实际)",
+        [" Hz (specified)"] = " Hz (指定)",
+        [" fps (specified)"] = " fps (指定)",
+        [" Hz (estimated)"] = " Hz (实际)",
+        [" fps (estimated)"] = " fps (实际)",
     }
     
     -- 精确匹配
