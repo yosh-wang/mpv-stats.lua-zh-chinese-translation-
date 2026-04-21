@@ -1989,6 +1989,9 @@ local function auto_translate_text(text)
         ["A-V:"] = "音视频同步:",
         ["Deinterlacing:"] = "去隔行:",
         ["Context:"] = "上下文:",
+        ["unknown"] = "未知",
+        ["auto"] = "自动",
+        
         -- ==================== 帧率相关 ====================
         [" (specified)"] = " (指定)",
         [" (estimated)"] = " (实际)",
