@@ -1,0 +1,33 @@
+name: One-Click Auto Release
+
+on:
+  workflow_dispatch:   # 允许手动触发
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get current date and time
+        id: date
+        run: echo "TAG=v$(date +'%Y.%m.%d-%H%M%S')" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: stats.lua
+          generate_release_notes: true
+          tag_name: ${{ steps.date.outputs.TAG }}
+          name: ${{ steps.date.outputs.TAG }}
+          body: |
+            ## ⭐ [![Downloads](https://img.shields.io/github/downloads/${{ github.repository }}/${{ steps.date.outputs.TAG }}/total)](https://github.com/${{ github.repository }}/releases/tag/${{ steps.date.outputs.TAG }})
+            
+            ### 📥 下载
+            点击下面的 `stats.lua` 即可下载。
+            
+            ### 自动发布说明
+            本次版本由一键自动发布生成。
