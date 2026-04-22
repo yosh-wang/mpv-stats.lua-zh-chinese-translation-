@@ -1,4 +1,4 @@
-=name: Manual Release with Commit Message
+name: Manual Release with Commit Messages
 
 on:
   workflow_dispatch:
@@ -18,12 +18,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
-          fetch-depth: 0  # 获取完整历史以便获取提交信息
+          fetch-depth: 0  # 获取完整历史，以便比较 tag
 
-      - name: Get latest commit message
-        id: commit_msg
+      - name: Get commit messages since last tag
+        id: commit_msgs
         run: |
-          echo "MSG=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
+          # 获取上一个 tag（如果存在）
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            # 如果没有 tag，则获取所有提交（限制最多 50 条）
+            COMMITS=$(git log --pretty=format:"- %s" -n 50)
+          else
+            COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s")
+          fi
+          # 将多行内容转义，以便在 GitHub Actions 的 output 中使用
+          # 使用 EOF 标记保留换行
+          echo "MSG<<EOF" >> $GITHUB_OUTPUT
+          echo "$COMMITS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create Release
         uses: softprops/action-gh-release@v3
@@ -35,4 +47,4 @@ jobs:
             ## ⭐ [![GitHub downloads](https://img.shields.io/github/downloads/${{ github.repository }}/${{ github.event.inputs.version }}/total?cacheSeconds=300)](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.version }})
 
             ### 更新内容
-            ${{ steps.commit_msg.outputs.MSG }}
+            ${{ steps.commit_msgs.outputs.MSG }}
