@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: '版本号 (例如 v9.0.0)'
+        description: '版本号 (例如 v16.0.0)'
         required: true
         type: string
 
@@ -18,21 +18,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
         with:
-          fetch-depth: 0  # 获取完整历史，以便比较 tag
+          fetch-depth: 0
 
       - name: Get commit messages since last tag
         id: commit_msgs
         run: |
-          # 获取上一个 tag（如果存在）
+          # 获取上一个 tag
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "LAST_TAG=${LAST_TAG}" >> $GITHUB_OUTPUT
+          
+          # 获取提交信息
           if [ -z "$LAST_TAG" ]; then
-            # 如果没有 tag，则获取所有提交（限制最多 50 条）
-            COMMITS=$(git log --pretty=format:"- %s" -n 50)
+            COMMITS=$(git log --pretty=format:"- %s (%h)" -n 50)
           else
-            COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s")
+            COMMITS=$(git log ${LAST_TAG}..HEAD --pretty=format:"- %s (%h)")
           fi
-          # 将多行内容转义，以便在 GitHub Actions 的 output 中使用
-          # 使用 EOF 标记保留换行
+          
+          # 输出多行
           echo "MSG<<EOF" >> $GITHUB_OUTPUT
           echo "$COMMITS" >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
@@ -48,3 +50,5 @@ jobs:
 
             ### 更新内容
             ${{ steps.commit_msgs.outputs.MSG }}
+
+            **完整更新日志**：[查看对比](${{ github.server_url }}/${{ github.repository }}/compare/${{ steps.commit_msgs.outputs.LAST_TAG }}...${{ github.event.inputs.version }})
