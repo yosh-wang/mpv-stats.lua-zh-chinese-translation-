@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: '版本号 (例如 v16.0.0)'
+        description: '版本号 (例如 v17.0.0)'
         required: true
         type: string
 
@@ -51,4 +51,4 @@ jobs:
             ### 更新内容
             ${{ steps.commit_msgs.outputs.MSG }}
 
-            **完整更新日志**：[查看对比](${{ github.server_url }}/${{ github.repository }}/compare/${{ steps.commit_msgs.outputs.LAST_TAG }}...${{ github.event.inputs.version }})
+            **版本之间**：[${{ steps.commit_msgs.outputs.LAST_TAG }}...${{ github.event.inputs.version }}](${{ github.server_url }}/${{ github.repository }}/compare/${{ steps.commit_msgs.outputs.LAST_TAG }}...${{ github.event.inputs.version }})
