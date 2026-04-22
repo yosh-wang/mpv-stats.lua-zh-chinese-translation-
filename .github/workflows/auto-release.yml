@@ -51,4 +51,4 @@ jobs:
             ### 更新内容
             ${{ steps.commit_msgs.outputs.MSG }}
 
-            **版本之间**：[${{ steps.commit_msgs.outputs.LAST_TAG }}...${{ github.event.inputs.version }}](${{ github.server_url }}/${{ github.repository }}/compare/${{ steps.commit_msgs.outputs.LAST_TAG }}...${{ github.event.inputs.version }})
+            **完整更新日志**：[${{ steps.commit_msgs.outputs.LAST_TAG }}...${{ github.event.inputs.version }}](${{ github.server_url }}/${{ github.repository }}/compare/${{ steps.commit_msgs.outputs.LAST_TAG }}...${{ github.event.inputs.version }})
