@@ -1,0 +1,33 @@
+name: Auto Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Get tag name
+        id: tag
+        run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: stats.lua
+          generate_release_notes: true
+          body: |
+            ## ⭐ [![Downloads](https://img.shields.io/github/downloads/${{ github.repository }}/${{ steps.tag.outputs.TAG }}/total)](https://github.com/${{ github.repository }}/releases/tag/${{ steps.tag.outputs.TAG }})
+            
+            ### 下载
+            点击下面的 `stats.lua` 即可下载。
+            
+            ### 更新内容
+            请查看自动生成的日志。
