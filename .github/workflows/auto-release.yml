@@ -1,7 +1,13 @@
-name: One-Click Auto Release
+name: One-Click Auto Release (Manual Version)
 
 on:
-  workflow_dispatch:   # 允许手动触发
+  workflow_dispatch:
+    inputs:
+      version:
+        description: '版本号 (例如 v11.0.0)'
+        required: true
+        default: 'v11.0.0'
+        type: string
 
 permissions:
   contents: write
@@ -10,24 +16,20 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Get current date and time
-        id: date
-        run: echo "TAG=v$(date +'%Y.%m.%d-%H%M%S')" >> $GITHUB_OUTPUT
+      - uses: actions/checkout@v5   # 升级到 v5，支持 Node.js 24
 
       - name: Create Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3   # 升级到 v3，支持 Node.js 24
         with:
           files: stats.lua
           generate_release_notes: true
-          tag_name: ${{ steps.date.outputs.TAG }}
-          name: ${{ steps.date.outputs.TAG }}
+          tag_name: ${{ github.event.inputs.version }}
+          name: ${{ github.event.inputs.version }}
           body: |
-            ## ⭐ [![Downloads](https://img.shields.io/github/downloads/${{ github.repository }}/${{ steps.date.outputs.TAG }}/total)](https://github.com/${{ github.repository }}/releases/tag/${{ steps.date.outputs.TAG }})
+            ## ⭐ [![Downloads](https://img.shields.io/github/downloads/${{ github.repository }}/${{ github.event.inputs.version }}/total)](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.version }})
             
             ### 📥 下载
             点击下面的 `stats.lua` 即可下载。
             
-            ### 自动发布说明
-            本次版本由一键自动发布生成。
+            ### 更新说明
+            请查看自动生成的更新日志。
