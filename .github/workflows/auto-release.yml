@@ -1,12 +1,11 @@
-name: One-Click Auto Release (Manual Version)
+=name: Manual Release with Commit Message
 
 on:
   workflow_dispatch:
     inputs:
       version:
-        description: '版本号 (例如 v11.0.0)'
+        description: '版本号 (例如 v9.0.0)'
         required: true
-        default: 'v11.0.0'
         type: string
 
 permissions:
@@ -16,20 +15,24 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5   # 升级到 v5，支持 Node.js 24
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0  # 获取完整历史以便获取提交信息
+
+      - name: Get latest commit message
+        id: commit_msg
+        run: |
+          echo "MSG=$(git log -1 --pretty=%B)" >> $GITHUB_OUTPUT
 
       - name: Create Release
-        uses: softprops/action-gh-release@v3   # 升级到 v3，支持 Node.js 24
+        uses: softprops/action-gh-release@v3
         with:
           files: stats.lua
-          generate_release_notes: true
           tag_name: ${{ github.event.inputs.version }}
           name: ${{ github.event.inputs.version }}
           body: |
-            ## ⭐ [![Downloads](https://img.shields.io/github/downloads/${{ github.repository }}/${{ github.event.inputs.version }}/total)](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.version }})
-            
-            ### 📥 下载
-            点击下面的 `stats.lua` 即可下载。
-            
-            ### 更新说明
-            请查看自动生成的更新日志。
+            ## ⭐ [![GitHub downloads](https://img.shields.io/github/downloads/${{ github.repository }}/${{ github.event.inputs.version }}/total?cacheSeconds=300)](https://github.com/${{ github.repository }}/releases/tag/${{ github.event.inputs.version }})
+
+            ### 更新内容
+            ${{ steps.commit_msg.outputs.MSG }}
