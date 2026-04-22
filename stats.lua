@@ -1982,6 +1982,18 @@ local function auto_translate_text(text)
         ["Profile:"] = "配置文件:",
         ["Level:"] = "级别:",
         
+        -- ==================== 轨道标志 ====================
+        ["default"] = "默认",
+        ["forced"] = "强制",
+        ["dependent"] = "依赖",
+        ["visual-impaired"] = "视觉障碍",
+        ["hearing-impaired"] = "听觉障碍",
+        ["original"] = "原始",
+        ["commentary"] = "解说",
+        ["image"] = "图像",
+        ["albumart"] = "专辑封面",
+        ["external"] = "外部",
+        
         -- ==================== 滤镜相关 ====================
         [" (disabled)"] = " (已禁用)",
         
