@@ -6,11 +6,7 @@
 -- Please note: not every property is always available and therefore not always
 -- visible.
 
--- ============================================================
--- 以下是原版文件内容（保持不变）
--- ============================================================
-
-local mp = require 'mp'
+本地 mp = 要求 'mp'
 local utils = require 'mp.utils'
 local input = require 'mp.input'
 
@@ -24,16 +20,16 @@ local o = {
     key_page_5 = "5",
     key_page_0 = "0",
     -- For pages which support scrolling
-    key_scroll_up = "UP",
-    key_scroll_down = "DOWN",
-    key_search = "/",
-    key_exit = "ESC",
-    scroll_lines = 1,
+    键_向上滚动 = "UP","UP",
+    键_向下滚动 = "DOWN","DOWN",
+    key_search = "&""/",
+    键退出 = "ESC","ESC",
+    滚动行数 = 1,1,
 
-    duration = 4,
-    redraw_delay = 1,                -- acts as duration in the toggling case
-    ass_formatting = true,
-    persistent_overlay = false,      -- whether the stats can be overwritten by other output
+    持续时间 = 4,4,
+    redraw_delay = 1,                -- 在切换情况下类似于持续时间1,                -- acts as duration in the toggling case
+    ass_formatting = true,true,
+    persistent_overlay = false,      -- 统计数据是否可以被其他输出覆盖false,      -- whether the stats can be overwritten by other output
     filter_params_max_length = 100,  -- show one filter per line if list exceeds this length
     file_tag_max_length = 128,       -- only show file tags shorter than this length in bytes
     file_tag_max_count = 16,         -- only show the first x file tags
