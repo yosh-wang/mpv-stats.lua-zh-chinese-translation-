@@ -103,7 +103,7 @@
 
 ### 1️⃣ 禁用内置英文脚本
 
-在 `mpv.conf` 文件中添加以下一行：
+在 `mpv.conf` 文件中修改或者添加以下一行代码：
 
 ```ini
 load-stats-overlay=no
