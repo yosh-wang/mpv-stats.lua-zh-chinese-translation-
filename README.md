@@ -1,3 +1,6 @@
+#  mpv playe QQ 群号：1097053691
+#  点击链接加入群聊【mpv player】： https://qm.qq.com/q/KQZsl4wFmG
+
 # 🎬 mpv 中文版统计脚本 (stats.lua)
 
 <!-- 第一行：社交互动核心指标 -->
