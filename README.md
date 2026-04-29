@@ -113,9 +113,7 @@ load-stats-overlay=no
 
 将 `stats.lua` 放入 mpv 的脚本目录：
 
-- **Windows** — `%APPDATA%\mpv\scripts\`
-- **macOS**   — `~/.config/mpv/scripts/`
-- **Linux**   — `~/.config/mpv/scripts/`
+整合包的位置在：mpv_config\portable_config\scripts\stats.lua
 
 ---
 
