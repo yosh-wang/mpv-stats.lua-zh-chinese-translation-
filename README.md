@@ -1,6 +1,6 @@
 ---
 #  mpv playe QQ 群号：1097053691
-#  点击链接加入群聊【mpv player】： https://qm.qq.com/q/KQZsl4wFmG
+##  点击链接加入群聊【mpv player】： https://qm.qq.com/q/KQZsl4wFmG
 ---
 
 
