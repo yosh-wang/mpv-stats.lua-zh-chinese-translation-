@@ -1,7 +1,7 @@
 ---
 #  mpv playe QQ群：1097053691
 ##  点击链接加入群聊【mpv player】： https://qm.qq.com/q/KQZsl4wFmG
-<img width="444" height="527" alt="ScreenShot_2026-04-29_130857_838" src="https://github.com/user-attachments/assets/9878872f-d11a-4984-9bd0-35c1621d23e2" />
+<img width="444" alt="ScreenShot_2026-04-29_130857_838" src="https://github.com/user-attachments/assets/9878872f-d11a-4984-9bd0-35c1621d23e2" />
 
 ---
 
