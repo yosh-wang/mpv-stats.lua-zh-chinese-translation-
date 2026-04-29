@@ -206,9 +206,7 @@ load-stats-overlay=no
 
 ### 2️⃣ Install this script
 
-- **Windows** — `%APPDATA%\mpv\scripts\`
-- **macOS**   — `~/.config/mpv/scripts/`
-- **Linux**   — `~/.config/mpv/scripts/`
+The location for portable packages is: mpv_config\portable_config\scripts\stats.lua
   
 ---
 
