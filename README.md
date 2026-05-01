@@ -130,6 +130,14 @@ load-stats-overlay=no
 <div align="center">
   <img width="900" alt="统计界面" src="screenshot.png">
   <br><br>
+
+  
+<img width="1200" height="800" alt="4" src="https://github.com/user-attachments/assets/90316e36-024c-46c0-a582-ac6ba024f400" />
+<img width="1200" height="800" alt="3" src="https://github.com/user-attachments/assets/12698231-bdfa-4c8a-9085-170e84f90b9e" />
+<img width="1200" height="800" alt="2" src="https://github.com/user-attachments/assets/badb9e42-36df-4e7a-bc5d-1488849fefc1" />
+<img width="1200" height="800" alt="1" src="https://github.com/user-attachments/assets/8177b884-0b02-411d-b138-c3b1cd2a0bff" />
+
+
   <img width="600" height="1000" alt="内部性能信息" src="https://github.com/user-attachments/assets/2d4d3565-5952-44e9-b6fe-7e136363d29e">
 </div>
 
