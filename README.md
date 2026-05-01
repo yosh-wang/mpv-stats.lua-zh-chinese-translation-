@@ -1,10 +1,4 @@
 ---
-#  Mpv Player QQ群：1097053691
-##  点击链接加入群聊【mpv player】： https://qm.qq.com/q/KQZsl4wFmG
-<img width="222" height="263.5" alt="技术交流群：1097053691" src="https://github.com/user-attachments/assets/76d6e4cb-1582-42e7-98d5-250504fdb5db" />
-
----
-
 
 # 🎬 mpv 中文版统计脚本 (stats.lua)
 
