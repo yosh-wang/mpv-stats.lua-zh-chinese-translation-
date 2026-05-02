@@ -1,6 +1,6 @@
 ---
 
-# 🎬 mpv 中文版统计脚本 (stats.lua)
+# 🎬 mpv 中文版统计脚本 (stats.lua) 汉化原创
 
 <!-- 第一行：社交互动核心指标 -->
 [![GitHub stars](https://img.shields.io/github/stars/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/stargazers)
