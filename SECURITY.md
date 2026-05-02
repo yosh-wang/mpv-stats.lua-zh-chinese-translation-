@@ -5,7 +5,7 @@
 If you discover a security vulnerability in this project, please **do not** report it in a public issue.  
 Instead, contact the maintainer privately:
 
-- 📧 Email: **[yosh.wang@foxmail.com]**
+- 📧 Email: **]**
 - 💬 GitHub: [@yosh-wang](https://github.com/yosh-wang)
 
 We will acknowledge your report within **7 business days**, assess the issue, and strive to release a fix or provide a response within **30 days**.
@@ -43,7 +43,7 @@ However, this script does **not** process user input, so the risk is extremely l
 如果你在本项目中发现了安全漏洞，请 **不要** 在公开 issue 中报告。  
 请通过以下方式私下联系维护者：
 
-- 📧 邮箱：**[yosh.wang@foxmail.com]**
+- 📧 邮箱：**[]**
 - 💬 GitHub：[@yosh-wang](https://github.com/yosh-wang)
 
 我们会在 **7 个工作日内** 确认并评估问题，并尽力在 **30 天内** 修复或给出回应。
