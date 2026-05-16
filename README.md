@@ -1,9 +1,3 @@
-<img width="3840" height="2160" alt="5" src="https://github.com/user-attachments/assets/b5753265-65f4-4636-a0cf-1a290cd55489" />
-
-
-
-
-
 ---
 
 # 🎬 mpv 中文版统计脚本 (stats.lua) 汉化原创
@@ -133,20 +127,12 @@ load-stats-overlay=no
 
 ## 📸 预览
 
-<img width="1200" height="800" alt="1" src="https://github.com/user-attachments/assets/8177b884-0b02-411d-b138-c3b1cd2a0bff" />
-<img width="1200" height="800" alt="4" src="https://github.com/user-attachments/assets/90316e36-024c-46c0-a582-ac6ba024f400" />
-<img width="1200" height="800" alt="3" src="https://github.com/user-attachments/assets/12698231-bdfa-4c8a-9085-170e84f90b9e" />
-<img width="1200" height="800" alt="2" src="https://github.com/user-attachments/assets/badb9e42-36df-4e7a-bc5d-1488849fefc1" />
-
-
-
 <img width="1200" height="675" alt="1" src="https://github.com/user-attachments/assets/3597c982-c51f-47ed-8c20-14d9365ffb37" />
 <img width="1200" height="675" alt="2" src="https://github.com/user-attachments/assets/e5112a5a-2524-4603-a792-fd2f67d0778c" />
 <img width="1200" height="675" alt="3" src="https://github.com/user-attachments/assets/67c45620-3e2b-4206-9fdc-0f30e4e05ad2" />
 <img width="1200" height="675" alt="4" src="https://github.com/user-attachments/assets/9f82e17d-e789-4cdd-8a7b-3f0af267645a" />
 <img width="1200" height="675" alt="5" src="https://github.com/user-attachments/assets/c115431f-604f-46b1-8f5f-3d4cc848752c" />
 <img width="1200" height="675" alt="6" src="https://github.com/user-attachments/assets/4de58e57-ac98-4d59-b14d-dc76c77e8a2b" />
-
 
 ---
 ---
@@ -235,11 +221,12 @@ This project is released under the [MIT License](https://github.com/yosh-wang/mp
 
 ## 📸 Preview / 
 
-
-<img width="1200" height="800" alt="1" src="https://github.com/user-attachments/assets/8177b884-0b02-411d-b138-c3b1cd2a0bff" />
-<img width="1200" height="800" alt="4" src="https://github.com/user-attachments/assets/90316e36-024c-46c0-a582-ac6ba024f400" />
-<img width="1200" height="800" alt="3" src="https://github.com/user-attachments/assets/12698231-bdfa-4c8a-9085-170e84f90b9e" />
-<img width="1200" height="800" alt="2" src="https://github.com/user-attachments/assets/badb9e42-36df-4e7a-bc5d-1488849fefc1" />
+<img width="1200" height="675" alt="1" src="https://github.com/user-attachments/assets/3597c982-c51f-47ed-8c20-14d9365ffb37" />
+<img width="1200" height="675" alt="2" src="https://github.com/user-attachments/assets/e5112a5a-2524-4603-a792-fd2f67d0778c" />
+<img width="1200" height="675" alt="3" src="https://github.com/user-attachments/assets/67c45620-3e2b-4206-9fdc-0f30e4e05ad2" />
+<img width="1200" height="675" alt="4" src="https://github.com/user-attachments/assets/9f82e17d-e789-4cdd-8a7b-3f0af267645a" />
+<img width="1200" height="675" alt="5" src="https://github.com/user-attachments/assets/c115431f-604f-46b1-8f5f-3d4cc848752c" />
+<img width="1200" height="675" alt="6" src="https://github.com/user-attachments/assets/4de58e57-ac98-4d59-b14d-dc76c77e8a2b" />
 
 ---
 
