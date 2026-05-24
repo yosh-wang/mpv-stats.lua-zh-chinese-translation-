@@ -229,5 +229,3 @@ This project is released under the [MIT License](https://github.com/yosh-wang/mp
 <img width="1200" height="675" alt="6" src="https://github.com/user-attachments/assets/4de58e57-ac98-4d59-b14d-dc76c77e8a2b" />
 
 ---
-
-
