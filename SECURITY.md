@@ -1,6 +1,6 @@
 # 🔒 Security Policy
 
-## Reporting a Vulnerability
+## Reporting a Vulnerability   
 
 If you discover a security vulnerability in this project, please **do not** report it in a public issue.  
 Instead, contact the maintainer privately:
