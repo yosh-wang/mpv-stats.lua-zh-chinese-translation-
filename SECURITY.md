@@ -5,7 +5,7 @@
 If you discover a security vulnerability in this project, please **do not** report it in a public issue.  
 Instead, contact the maintainer privately:
 
-- 📧 Email: **]**
+- 📧 Email: **   **
 - 💬 GitHub: [@yosh-wang](https://github.com/yosh-wang)
 
 We will acknowledge your report within **7 business days**, assess the issue, and strive to release a fix or provide a response within **30 days**.
