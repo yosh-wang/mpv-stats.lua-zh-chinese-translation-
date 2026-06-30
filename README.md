@@ -151,6 +151,40 @@ load-stats-overlay=no
 
 ---
 
+
+本仓库提供两个版本，请根据使用场景选择：
+
+| 文件 | 适用平台 | 说明 |
+|------|---------|------|
+| `stats-PC.lua` | PC 端 | 纯 PC 版本，包含完整中文翻译和 PC 快捷键支持 |
+| `stats-PC+Android.lua` | PC + 安卓 | **推荐** 包含 PC 所有功能 + 安卓 `script-message` 接口支持 |
+
+> 💡 **建议**：大多数用户推荐使用 `stats-PC+Android.lua`，它在 PC 上功能与 `stats-PC.lua` 完全一致，同时额外支持安卓自定义按钮控制。
+
+---
+
+## 两种版本的区别
+
+| 功能 | `stats-PC.lua` | `stats-PC+Android.lua` |
+|------|:---:|:---:|
+| PC 端中文翻译 | ✅ | ✅ |
+| PC 端键盘快捷键（1-5, 0, ↑↓, /, ESC） | ✅ | ✅ |
+| PC 端 `script-binding` 页面切换 | ✅ | ✅ |
+| 安卓 `script-message` 接口 | ❌ | ✅ |
+| 安卓一键循环切换 `toggle-stats` | ❌ | ✅ |
+| 安卓 `close-stats` 命令 | ❌ | ✅ |
+
+---
+
+## 用户应该用哪个？
+
+- **只用 PC** → 两个都可以，推荐 `stats-PC+Android.lua`（保留未来扩展性）
+- **PC + 安卓都用** → 必须用 `stats-PC+Android.lua`
+- **纯安卓用户** → 用 `stats-PC+Android.lua`
+
+
+---
+
 ## 📜 开源协议
 
 本项目基于 [MIT License](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE.md) 开源协议发布。
