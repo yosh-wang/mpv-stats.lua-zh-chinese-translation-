@@ -1765,21 +1765,130 @@ mp.add_key_binding(nil, "display-stats", function() process_key_binding(true) en
 mp.add_key_binding(nil, "display-stats-toggle", function() process_key_binding(false) end,
     {repeatable=false})
 
+-- ============================================================
+-- 关闭 toggle 显示并清理所有资源
+-- ============================================================
+local function close_toggle_display()
+    if not display_timer:is_enabled() then return end
+    display_timer:kill()
+    if not display_timer.oneshot then
+        cache_recorder_timer:stop()
+        if tm_viz_prev ~= nil then
+            mp.set_property_native("tone-mapping-visualize", tm_viz_prev)
+            tm_viz_prev = nil
+        end
+    end
+    clear_screen()
+    remove_page_bindings()
+    if recorder then
+        mp.unobserve_property(recorder)
+        recorder = nil
+    end
+end
+
+-- ============================================================
+-- 打开指定页面（toggle 模式）。如果已有页面在显示，先关闭再切换
+-- ============================================================
+local function open_page_toggle(page_key)
+    reset_scroll_offsets()
+    -- 先关闭当前可能正在显示的统计
+    close_toggle_display()
+
+    -- 初始化数据记录
+    if o.plot_vsync_jitter or o.plot_vsync_ratio then
+        recorder = record_data(o.skip_frames)
+        mp.observe_property("vsync-jitter", "none", recorder)
+    end
+    if o.plot_tonemapping_lut then
+        tm_viz_prev = mp.get_property_native("tone-mapping-visualize")
+        mp.set_property_native("tone-mapping-visualize", true)
+    end
+    cache_ahead_buf = {0, pos = 1, len = 50, max = 0}
+    cache_speed_buf = {0, pos = 1, len = 50, max = 0}
+    cache_recorder_timer:resume()
+
+    display_timer:kill()
+    display_timer.oneshot = false
+    display_timer.timeout = o.redraw_delay
+    curr_page = page_key
+    add_page_bindings()
+    bind_exit()
+    update_scroll_bindings(page_key)
+    print_page(page_key)
+    display_timer:resume()
+end
+
+-- ============================================================
+-- 电脑版 script-binding 按键映射（input.conf 用）
+-- 用法：e  script-binding stats/display-page-2
+--       h  script-binding stats/display-page-2-toggle
+-- ============================================================
 for k, page in pairs(pages) do
-    -- Single invocation key bindings for specific pages, e.g.:
-    -- "e script-binding stats/display-page-2"
+    -- 单次显示（几秒后自动消失）
     mp.add_key_binding(nil, "display-page-" .. page.idx, function()
         curr_page = k
         process_key_binding(true)
     end, {repeatable=true})
 
-    -- Key bindings to toggle a specific page, e.g.:
-    -- "h script-binding stats/display-page-4-toggle".
+    -- 切换显示：同一页面 → 关闭；不同页面 → 切换
     mp.add_key_binding(nil, "display-page-" .. page.idx .. "-toggle", function()
-        curr_page = k
-        process_key_binding(false)
+        if display_timer:is_enabled() and not display_timer.oneshot and curr_page == k then
+            close_toggle_display()
+        else
+            open_page_toggle(k)
+        end
     end, {repeatable=false})
 end
+
+-- ============================================================
+-- 安卓MPV自定义按钮 script-message 接口
+-- 安卓按钮命令：script-message toggle-stats-page-1
+-- ============================================================
+for k, page in pairs(pages) do
+    mp.register_script_message("toggle-stats-page-" .. page.idx, function()
+        if display_timer:is_enabled() and not display_timer.oneshot and curr_page == k then
+            close_toggle_display()
+        else
+            open_page_toggle(k)
+        end
+    end)
+end
+
+-- 循环切换统计页面：第一次显示默认信息，依次切换，最后一页再点关闭
+-- 安卓按钮命令：script-message toggle-stats
+do
+    local cycle_order = {1, 2, 3, 4, 5, 0}
+    local idx_to_key = {}
+    for k, page in pairs(pages) do
+        idx_to_key[page.idx] = k
+    end
+
+    mp.register_script_message("toggle-stats", function()
+        if display_timer:is_enabled() and not display_timer.oneshot then
+            local cur_idx = pages[curr_page].idx
+            local next_idx = nil
+            for i, idx in ipairs(cycle_order) do
+                if idx == cur_idx then
+                    next_idx = cycle_order[i + 1]
+                    break
+                end
+            end
+            if next_idx then
+                open_page_toggle(idx_to_key[next_idx])
+            else
+                close_toggle_display()
+            end
+        else
+            open_page_toggle(idx_to_key[1])
+        end
+    end)
+end
+
+-- 关闭所有统计
+-- 安卓按钮命令：script-message close-stats
+mp.register_script_message("close-stats", function()
+    close_toggle_display()
+end)
 
 -- Reprint stats immediately when VO was reconfigured, only when toggled
 mp.register_event("video-reconfig",
