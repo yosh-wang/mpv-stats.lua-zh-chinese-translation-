@@ -1,4 +1,19 @@
 
+<p align="center">
+  <img src="https://img.shields.io/badge/🎬-mpv中文统计脚本-00ADEF?style=for-the-badge&logo=mpv&logoColor=white" alt="mpv中文统计脚本">
+</p>
+
+<p align="center">
+  <strong>✨ 完整汉化 · 即装即用 · 与原版功能同步 ✨</strong>
+</p>
+
+> [!IMPORTANT]
+> 🚫 **非商业使用声明**
+>
+> 本项目仅供 **个人学习、研究和非商业用途** 使用，**严禁任何形式的商业使用**。
+>
+> 📄 详见 [LICENSE.md](LICENSE.md)
+
 ---
 
 # 🎬 mpv 中文版统计脚本 (stats.lua) 汉化原创  
@@ -261,3 +276,30 @@ This project is released under the [MIT License](https://github.com/yosh-wang/mp
 <img width="1200" height="675" alt="6" src="https://github.com/user-attachments/assets/4de58e57-ac98-4d59-b14d-dc76c77e8a2b" />
 
 ---
+
+---
+
+## 📄 许可证
+
+本项目基于 **非商业使用许可** 开源，**严禁商用**。
+
+📖 详见 [LICENSE.md](LICENSE.md)
+
+---
+
+## 🙏 致谢
+
+- [mpv 播放器](https://mpv.io/) — 强大而优雅的媒体播放器
+- [@XSHNDWX](https://github.com/XSHNDWX) — 安卓平台技术支持
+- 所有使用和反馈本脚本的朋友们
+
+---
+
+<p align="center">
+  <sub>Made with ❤️ by <a href="https://github.com/yosh-wang">yosh-wang</a></sub>
+</p>
+
+<p align="center">
+  <sub>⭐ 如果这个项目对您有帮助，请给一个 Star 支持一下！</sub>
+</p>
+```
