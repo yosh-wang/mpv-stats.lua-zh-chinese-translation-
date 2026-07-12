@@ -6,6 +6,11 @@
 -- Please note: not every property is always available and therefore not always
 -- visible.
 
+
+-- ============================================================
+-- 以下是原版文件内容（保持不变）
+-- ============================================================
+
 local mp = require 'mp'
 local utils = require 'mp.utils'
 local input = require 'mp.input'
@@ -1765,130 +1770,21 @@ mp.add_key_binding(nil, "display-stats", function() process_key_binding(true) en
 mp.add_key_binding(nil, "display-stats-toggle", function() process_key_binding(false) end,
     {repeatable=false})
 
--- ============================================================
--- 关闭 toggle 显示并清理所有资源
--- ============================================================
-local function close_toggle_display()
-    if not display_timer:is_enabled() then return end
-    display_timer:kill()
-    if not display_timer.oneshot then
-        cache_recorder_timer:stop()
-        if tm_viz_prev ~= nil then
-            mp.set_property_native("tone-mapping-visualize", tm_viz_prev)
-            tm_viz_prev = nil
-        end
-    end
-    clear_screen()
-    remove_page_bindings()
-    if recorder then
-        mp.unobserve_property(recorder)
-        recorder = nil
-    end
-end
-
--- ============================================================
--- 打开指定页面（toggle 模式）。如果已有页面在显示，先关闭再切换
--- ============================================================
-local function open_page_toggle(page_key)
-    reset_scroll_offsets()
-    -- 先关闭当前可能正在显示的统计
-    close_toggle_display()
-
-    -- 初始化数据记录
-    if o.plot_vsync_jitter or o.plot_vsync_ratio then
-        recorder = record_data(o.skip_frames)
-        mp.observe_property("vsync-jitter", "none", recorder)
-    end
-    if o.plot_tonemapping_lut then
-        tm_viz_prev = mp.get_property_native("tone-mapping-visualize")
-        mp.set_property_native("tone-mapping-visualize", true)
-    end
-    cache_ahead_buf = {0, pos = 1, len = 50, max = 0}
-    cache_speed_buf = {0, pos = 1, len = 50, max = 0}
-    cache_recorder_timer:resume()
-
-    display_timer:kill()
-    display_timer.oneshot = false
-    display_timer.timeout = o.redraw_delay
-    curr_page = page_key
-    add_page_bindings()
-    bind_exit()
-    update_scroll_bindings(page_key)
-    print_page(page_key)
-    display_timer:resume()
-end
-
--- ============================================================
--- 电脑版 script-binding 按键映射（input.conf 用）
--- 用法：e  script-binding stats/display-page-2
---       h  script-binding stats/display-page-2-toggle
--- ============================================================
 for k, page in pairs(pages) do
-    -- 单次显示（几秒后自动消失）
+    -- Single invocation key bindings for specific pages, e.g.:
+    -- "e script-binding stats/display-page-2"
     mp.add_key_binding(nil, "display-page-" .. page.idx, function()
         curr_page = k
         process_key_binding(true)
     end, {repeatable=true})
 
-    -- 切换显示：同一页面 → 关闭；不同页面 → 切换
+    -- Key bindings to toggle a specific page, e.g.:
+    -- "h script-binding stats/display-page-4-toggle".
     mp.add_key_binding(nil, "display-page-" .. page.idx .. "-toggle", function()
-        if display_timer:is_enabled() and not display_timer.oneshot and curr_page == k then
-            close_toggle_display()
-        else
-            open_page_toggle(k)
-        end
+        curr_page = k
+        process_key_binding(false)
     end, {repeatable=false})
 end
-
--- ============================================================
--- 安卓MPV自定义按钮 script-message 接口
--- 安卓按钮命令：script-message toggle-stats-page-1
--- ============================================================
-for k, page in pairs(pages) do
-    mp.register_script_message("toggle-stats-page-" .. page.idx, function()
-        if display_timer:is_enabled() and not display_timer.oneshot and curr_page == k then
-            close_toggle_display()
-        else
-            open_page_toggle(k)
-        end
-    end)
-end
-
--- 循环切换统计页面：第一次显示默认信息，依次切换，最后一页再点关闭
--- 安卓按钮命令：script-message toggle-stats
-do
-    local cycle_order = {1, 2, 3, 4, 5, 0}
-    local idx_to_key = {}
-    for k, page in pairs(pages) do
-        idx_to_key[page.idx] = k
-    end
-
-    mp.register_script_message("toggle-stats", function()
-        if display_timer:is_enabled() and not display_timer.oneshot then
-            local cur_idx = pages[curr_page].idx
-            local next_idx = nil
-            for i, idx in ipairs(cycle_order) do
-                if idx == cur_idx then
-                    next_idx = cycle_order[i + 1]
-                    break
-                end
-            end
-            if next_idx then
-                open_page_toggle(idx_to_key[next_idx])
-            else
-                close_toggle_display()
-            end
-        else
-            open_page_toggle(idx_to_key[1])
-        end
-    end)
-end
-
--- 关闭所有统计
--- 安卓按钮命令：script-message close-stats
-mp.register_script_message("close-stats", function()
-    close_toggle_display()
-end)
 
 -- Reprint stats immediately when VO was reconfigured, only when toggled
 mp.register_event("video-reconfig",
@@ -1933,8 +1829,12 @@ mp.observe_property('current-window-scale', 'native', update_property_cache)
 mp.observe_property('display-names', 'string', update_property_cache)
 mp.observe_property('hwdec-current', 'string', update_property_cache)
 
+
+
+
+
 -- ============================================================
--- 自动翻译模块 - 完整中文版
+-- 自动翻译模块 - 全局替换版（yosh.wang_20260712）（QQ交流群：1097053691）
 -- ============================================================
 
 -- 通用词汇翻译表
@@ -1953,140 +1853,142 @@ local function auto_translate_text(text)
         ["Internal Performance Info"] = "内部性能信息",
         
         -- ==================== 文件/媒体信息 ====================
-        ["File:"] = "文件:",
-        ["Title:"] = "标题:",
-        ["Duration:"] = "时长:",
-        ["Edition:"] = "版本:",
-        ["Chapter:"] = "章节:",
-        ["Size:"] = "大小:",
-        ["Format/Protocol:"] = "格式/协议:",
-        ["Total Cache:"] = "总缓存:",
+        ["File:"] = "文件：",
+        ["Title:"] = "标题：",
+        ["Duration:"] = "时长：",
+        ["Edition:"] = "版本：",
+        ["Chapter:"] = "章节：",
+        ["Size:"] = "大小：",
+        ["Format/Protocol:"] = "格式/协议：",
+        ["Total Cache:"] = "总缓存：",
         [" sec"] = " 秒",
-        [" sec)"] = " 秒)",
+        [" sec)"] = " 秒）",
+        [" fps (specified)"] = " fps（指定）",
+        [" fps (estimated)"] = " fps（估计）",
+        [" fps"] = " fps",
+        [" Hz (specified)"] = " Hz（指定）",
+        [" Hz (estimated)"] = " Hz（估计）",
+        [" Hz"] = " Hz",
+        [" kbps"] = " kbps",
+        [" (specified)"] = "（指定）",
+        [" (estimated)"] = "（估计）",
         
         -- ==================== 视频/显示器信息 ====================
-        ["Display:"] = "显示器:",
-        ["Context:"] = "上下文:",
-        ["A-V:"] = "音视频同步:",
-        ["Refresh Rate:"] = "刷新率:",
-        ["Frame Rate:"] = "帧率:",
-        ["Dropped Frames:"] = "丢帧:",
-        [" (decoder)"] = " (解码器)",
-        [" (output)"] = " (输出)",
-        ["Deinterlacing:"] = "去隔行:",
-        ["Resolution:"] = "分辨率:",
-        ["Output Resolution:"] = "输出分辨率:",
-        ["Format:"] = "格式:",
-        ["Levels:"] = "色阶:",
-        ["Chroma Loc:"] = "色度位置:",
-        ["Colormatrix:"] = "色彩矩阵:",
-        ["Primaries:"] = "基色:",
-        ["Transfer:"] = "传输:",
-        ["Bitrate:"] = "码率:",
-        ["Filters:"] = "滤镜:",
-        ["HW:"] = "硬解:",
+        ["Display:"] = "显示器：",
+        ["Context:"] = "渲染后端：",
+        ["A-V:"] = "音视频同步：",
+        ["Refresh Rate:"] = "刷新率：",
+        ["Frame Rate:"] = "帧率：",
+        ["Dropped Frames:"] = "丢帧：",
+        [" (decoder)"] = "（解码器）",
+        [" (output)"] = "（输出）",
+        ["Deinterlacing:"] = "去隔行：",
+        ["Resolution:"] = "分辨率：",
+        ["Output Resolution:"] = "输出分辨率：",
+        ["Format:"] = "格式：",
+        ["Levels:"] = "色彩范围：",
+        ["Chroma Loc:"] = "色度位置：",
+        ["Colormatrix:"] = "色彩矩阵：",
+        ["Primaries:"] = "色域基色：",
+        ["Transfer:"] = "传输函数：",
+        ["Bitrate:"] = "码率：",
+        ["Filters:"] = "滤镜：",
+        ["HW:"] = "硬解：",
+        ["AO:"] = "音频输出：",
+        ["Device:"] = "设备：",
+        ["AO Volume:"] = "音量：",
+        [" (Muted)"] = "（静音）",
+        ["A-V delay:"] = "音视频延迟：",
+        ["Channels:"] = "声道数：",
+        ["Sample Rate:"] = "采样率：",
+        
+        -- ==================== 显示同步 ====================
+        ["DS:"] = "显示同步：",
+        ["Mistimed:"] = "错时帧：",
+        ["Delayed:"] = "延迟帧：",
+        ["VSync Ratio:"] = "垂直同步比率：",
+        ["VSync Jitter:"] = "垂直同步抖动：",
         
         -- ==================== HDR相关 ====================
-        ["Mastering display:"] = "母版显示:",
-        ["MaxCLL:"] = "最大内容亮度:",
-        ["MaxFALL:"] = "最大帧平均亮度:",
-        ["MaxRGB:"] = "最大RGB:",
-        ["Avg:"] = "平均:",
+        ["Mastering display:"] = "母版显示：",
+        ["MaxCLL:"] = "最大内容亮度：",
+        ["MaxFALL:"] = "最大帧平均亮度：",
+        ["MaxRGB:"] = "最大RGB：",
+        ["Avg:"] = "平均：",
         [" cd/m²"] = " cd/m²",
-        ["HDR10:"] = "HDR10:",
-        ["HDR10+:"] = "HDR10+:",
-        ["PQ(Y):"] = "PQ(Y):",
-        ["Max:"] = "最大:",
-        
-        -- ==================== 音频信息 ====================
-        ["Audio:"] = "音频:",
-        ["AO:"] = "音频输出:",
-        ["Device:"] = "设备:",
-        ["AO Volume:"] = "音量:",
-        [" (Muted)"] = " (静音)",
-        ["A-V delay:"] = "音视频延迟:",
-        ["Channels:"] = "声道数:",
-        ["Sample Rate:"] = "采样率:",
-        [" Hz"] = " Hz",
+        ["HDR10:"] = "HDR10：",
+        ["HDR10+:"] = "HDR10+：",
+        ["PQ(Y):"] = "PQ(Y)：",
+        ["Max:"] = "最大：",
+        -- ["in"] = "使用",   -- 已删除
         
         -- ==================== 视频轨道信息 ====================
-        ["Video:"] = "视频:",
-        ["Image:"] = "图像:",
-        ["Frame:"] = "帧:",
-        ["Picture Type:"] = "画面类型:",
+        ["Video:"] = "视频：",
+        ["Image:"] = "图像：",
+        ["Frame:"] = "帧：",
+        ["Picture Type:"] = "画面类型：",
         ["Interlaced"] = "隔行扫描",
-        ["Timecode:"] = "时间码:",
+        ["Timecode:"] = "时间码：",
         ["GOP"] = "GOP",
         ["SMPTE"] = "SMPTE",
         ["Estimated SMPTE"] = "估计SMPTE",
         
-        -- ==================== 显示同步 ====================
-        ["DS:"] = "显示同步:",
-        ["Mistimed:"] = "错时帧:",
-        ["Delayed:"] = "延迟帧:",
-        ["VSync Ratio:"] = "垂直同步比率:",
-        ["VSync Jitter:"] = "垂直同步抖动:",
-        
         -- ==================== 帧耗时页面 ====================
-        ["Frame Timings:"] = "帧耗时:",
+        ["Frame Timings:"] = "帧耗时：",
         ["Total"] = "总计",
+        ["(last/average/peak μs)"] = "（最新/平均/峰值 微秒）",
         
         -- ==================== 缓存信息 ====================
-        ["Cache Info:"] = "缓存信息:",
-        ["Packet Queue:"] = "数据包队列:",
-        ["Readahead:"] = "预读:",
-        ["State:"] = "状态:",
+        ["Cache Info:"] = "缓存信息：",
+        ["Packet Queue:"] = "数据包队列：",
+        ["Readahead:"] = "预读：",
+        ["State:"] = "状态：",
         ["reading"] = "读取中",
-        ["seeking (to "] = "定位中 (到 ",
         ["eof"] = "文件尾",
         ["underrun"] = "缓存不足",
         ["inactive"] = "空闲",
-        ["Speed:"] = "速度:",
-        ["Total RAM:"] = "总内存:",
-        ["Forward RAM:"] = "前向内存:",
-        ["Disk Cache:"] = "磁盘缓存:",
-        ["(disabled)"] = "(已禁用)",
-        ["Media Seeks:"] = "媒体定位:",
-        ["Stream Seeks:"] = "流定位:",
-        ["Ranges:"] = "范围:",
-        ["Start Cached:"] = "起始已缓存:",
-        ["End Cached:"] = "结尾已缓存:",
+        ["Speed:"] = "速度：",
+        ["Total RAM:"] = "总内存：",
+        ["Forward RAM:"] = "前向内存：",
+        ["Disk Cache:"] = "磁盘缓存：",
+        ["(disabled)"] = "（已禁用）",
+        ["Media Seeks:"] = "媒体定位：",
+        ["Stream Seeks:"] = "流定位：",
+        ["Ranges:"] = "范围：",
+        ["Start Cached:"] = "起始已缓存：",
+        ["End Cached:"] = "结尾已缓存：",
         ["Range "] = "范围 ",
-        ["Unavailable."] = "不可用",
+        ["Unavailable."] = "不可用。",
         ["yes"] = "是",
         ["no"] = "否",
         
         -- ==================== 按键绑定页面 ====================
-        ["script: "] = "脚本: ",
+        ["script: "] = "脚本：",
         ["[unknown]"] = "[未知]",
-        ["Filter bindings:"] = "过滤绑定:",
-        ["(hint: scroll with "] = "(提示：使用 ",
+        ["Filter bindings:"] = "过滤绑定：",
+        ["(hint: scroll with "] = "（提示：使用 ",
         [" and search with "] = " 滚动，使用 ",
         
         -- ==================== 轨道信息页面 ====================
-        ["ID:"] = "ID:",
-        ["Demuxer ID:"] = "解复用器ID:",
-        ["Program ID:"] = "节目ID:",
-        ["FFmpeg Index:"] = "FFmpeg索引:",
-        ["Flags:"] = "标志:",
-        ["Codec:"] = "编解码器:",
-        ["Language:"] = "语言:",
-        ["Channel Layout:"] = "声道布局:",
-        ["HLS Bitrate:"] = "HLS码率:",
-        [" kbps"] = " kbps",
-        ["Rotation:"] = "旋转:",
-        ["Pixel Aspect Ratio:"] = "像素宽高比:",
-        ["Replay Gain:"] = "重放增益:",
-        ["Track:"] = "音轨:",
-        ["Album:"] = "专辑:",
-        ["Gain:"] = "增益:",
-        ["Peak:"] = "峰值:",
-        [" dB"] = " dB",
-        ["Dolby Vision:"] = "杜比视界:",
-        ["Profile:"] = "配置文件:",
-        ["Level:"] = "级别:",
-        
-        -- ==================== 轨道标志 ====================
+        ["ID:"] = "ID：",
+        ["Demuxer ID:"] = "解复用器ID：",
+        ["Program ID:"] = "节目ID：",
+        ["FFmpeg Index:"] = "FFmpeg索引：",
+        ["Flags:"] = "标志：",
+        ["Codec:"] = "编解码器：",
+        ["Language:"] = "语言：",
+        ["Channel Layout:"] = "声道布局：",
+        ["HLS Bitrate:"] = "HLS码率：",
+        ["Rotation:"] = "旋转：",
+        ["Pixel Aspect Ratio:"] = "像素宽高比：",
+        ["Replay Gain:"] = "重放增益：",
+        ["Track:"] = "音轨：",
+        ["Album:"] = "专辑：",
+        ["Gain:"] = "增益：",
+        ["Peak:"] = "峰值：",
+        ["Dolby Vision:"] = "杜比视界：",
+        ["Profile:"] = "配置文件：",
+        ["Level:"] = "级别：",
         ["default"] = "默认",
         ["forced"] = "强制",
         ["dependent"] = "依赖",
@@ -2094,27 +1996,11 @@ local function auto_translate_text(text)
         ["hearing-impaired"] = "听觉障碍",
         ["original"] = "原始",
         ["commentary"] = "解说",
-        ["image"] = "图像",
         ["albumart"] = "专辑封面",
         ["external"] = "外部",
         
         -- ==================== 滤镜相关 ====================
-        [" (disabled)"] = " (已禁用)",
-        
-        -- ==================== 其他 ====================
-        ["A-V:"] = "音视频同步:",
-        ["Deinterlacing:"] = "去隔行:",
-        ["Context:"] = "上下文:",
-        ["unknown"] = "未知",
-        ["auto"] = "自动",
-        
-        -- ==================== 帧率相关 ====================
-        [" (specified)"] = " (指定)",
-        [" (estimated)"] = " (实际)",
-        [" Hz (specified)"] = " Hz (指定)",
-        [" fps (specified)"] = " fps (指定)",
-        [" Hz (estimated)"] = " Hz (实际)",
-        [" fps (estimated)"] = " fps (实际)",
+        [" (disabled)"] = "（已禁用）",
     }
     
     -- 精确匹配
@@ -2123,7 +2009,7 @@ local function auto_translate_text(text)
         return result
     end
     
-    -- 模糊匹配（用于包含关系）
+    -- 模糊匹配
     for en, zh in pairs(translations) do
         if text:find(en, 1, true) then
             text = text:gsub(en, zh, 1)
@@ -2133,37 +2019,37 @@ local function auto_translate_text(text)
     return text
 end
 
--- ==================== 性能标签翻译（按 0 页面） ====================
+-- ==================== 性能标签翻译 ====================
+local perf_translations = {
+    ["poll-time"] = "轮询耗时",
+    ["demuxer/thread"] = "解封装/线程",
+    ["main/iterations"] = "主循环/单次",
+    ["main/thread"] = "主循环/线程",
+    ["osd/osd-render/cpu"] = "OSD渲染/CPU",
+    ["osd/osd-render/time"] = "OSD渲染/总时",
+    ["osd/sub-render/cpu"] = "字幕渲染/CPU",
+    ["osd/sub-render/time"] = "字幕渲染/总时",
+    ["vo/iterations"] = "视频输出/单次",
+    ["vo/video-draw/cpu"] = "视频输出/绘制/CPU",
+    ["vo/video-draw/time"] = "视频输出/绘制/总时",
+    ["vo/video-flip/cpu"] = "视频输出/提交/CPU",
+    ["vo/video-flip/time"] = "视频输出/提交/总时",
+}
+
+-- 保存原始函数
 local original_append_general_perfdata = append_general_perfdata
+
+-- 重写性能数据函数
 append_general_perfdata = function(s)
-    local perf_translations = {
-        -- 核心性能
-        ["poll-time"] = "轮询耗时",
-        ["demuxer/thread"] = "解封装器/线程",
-        ["main/iterations"] = "主循环/单次耗时",
-        ["main/thread"] = "主循环/线程",
-        ["osd/osd-render/cpu"] = "OSD渲染/CPU",
-        ["osd/osd-render/time"] = "OSD渲染/总耗时",
-        ["osd/sub-render/cpu"] = "字幕渲染/CPU",
-        ["osd/sub-render/time"] = "字幕渲染/总耗时",
-        
-        -- VO 相关
-        ["vo/iterations"] = "视频输出/单次耗时",
-        ["vo/video-draw/cpu"] = "视频输出/绘制/CPU",
-        ["vo/video-draw/time"] = "视频输出/绘制/总耗时",
-        ["vo/video-flip/cpu"] = "视频输出/帧提交/CPU",
-        ["vo/video-flip/time"] = "视频输出/帧提交/总耗时",
-    }
-    
     for i, data in ipairs(mp.get_property_native("perf-info") or {}) do
         local display_name = perf_translations[data.name]
         if not display_name and data.name:match("^script/") then
-            display_name = "脚本/" .. data.name:gsub("^script/", "")
+            display_name = data.name:gsub("^script/", "脚本/")
         elseif not display_name then
             display_name = data.name
         end
         
-        append(s, data.text or data.value, {prefix="["..tostring(i).."] "..display_name..":"})
+        append(s, data.text or data.value, {prefix="["..tostring(i).."] "..display_name.."："})
 
         if o.plot_perfdata and o.use_ass and data.value then
             local buf = perf_buffers[data.name]
@@ -2177,56 +2063,59 @@ append_general_perfdata = function(s)
     end
 end
 
--- ==================== 重写核心函数 ====================
-
--- 重写 append 函数
+-- ==================== 重写核心翻译函数 ====================
+-- 保存原始函数
 local original_append = append
+local original_append_property = append_property
+local original_scroll_hint = scroll_hint
+local original_cmd_subject = cmd_subject
+
+-- 重写 append
 append = function(s, str, attr)
     if str and type(str) == "string" then
         str = auto_translate_text(str)
     end
-    if attr and attr.prefix then
-        attr.prefix = auto_translate_text(attr.prefix)
-    end
-    if attr and attr.suffix then
-        attr.suffix = auto_translate_text(attr.suffix)
+    if attr then
+        if attr.prefix then
+            attr.prefix = auto_translate_text(attr.prefix)
+        end
+        if attr.suffix then
+            attr.suffix = auto_translate_text(attr.suffix)
+        end
     end
     return original_append(s, str, attr)
 end
 
--- 重写 append_property 函数
-local original_append_property = append_property
+-- 重写 append_property
 append_property = function(s, prop, attr, excluded, cached)
-    if attr and attr.prefix then
-        attr.prefix = auto_translate_text(attr.prefix)
-    end
-    if attr and attr.suffix then
-        attr.suffix = auto_translate_text(attr.suffix)
+    if attr then
+        if attr.prefix then
+            attr.prefix = auto_translate_text(attr.prefix)
+        end
+        if attr.suffix then
+            attr.suffix = auto_translate_text(attr.suffix)
+        end
     end
     return original_append_property(s, prop, attr, excluded, cached)
 end
 
--- ==================== 翻译各种函数返回值 ====================
-
--- 翻译 pages 表中的 desc
-for k, page in pairs(pages) do
-    if page.desc then
-        page.desc = auto_translate_text(page.desc)
-    end
-end
-
--- 翻译 scroll_hint 函数
-local original_scroll_hint = scroll_hint
+-- 重写 scroll_hint
 scroll_hint = function(search)
     local hint = original_scroll_hint(search)
     return auto_translate_text(hint)
 end
 
--- 翻译 cmd_subject 函数
-local original_cmd_subject = cmd_subject
+-- 重写 cmd_subject
 cmd_subject = function(cmd)
     local result = original_cmd_subject(cmd)
     return auto_translate_text(result)
+end
+
+-- ==================== 翻译页面描述 ====================
+for k, page in pairs(pages) do
+    if page.desc then
+        page.desc = auto_translate_text(page.desc)
+    end
 end
 
 -- ============================================================
