@@ -908,7 +908,7 @@ local function append_img_params(s, r, ro)
                                 r["prim-blue-x"] or 0, r["prim-blue-y"] or 0,
                                 r["prim-white-x"] or 0, r["prim-white-y"] or 0),
             {prefix="Primaries:", nl="", indent=indent})
-        append(s, r["primaries"], {prefix="in", nl="", indent=" ", prefix_sep=" ",
+        append(s, r["primaries"], {prefix="使用", nl="", indent=" ", prefix_sep=" ",
                                    no_prefix_markup=true})
     else
         append(s, r["primaries"], {prefix="Primaries:", nl="", indent=indent})
@@ -1445,7 +1445,7 @@ local function cache_stats()
     for n, range in ipairs(ranges) do
         append(stats, mp.format_time(range["start"]) .. " - " ..
                       mp.format_time(range["end"]),
-               {prefix = format("Range %s:", n)})
+               {prefix = "Range " .. n .. ":"})
     end
 
     return finalize_page({}, stats, false)
@@ -1861,8 +1861,8 @@ local function auto_translate_text(text)
         ["Size:"] = "大小：",
         ["Format/Protocol:"] = "格式/协议：",
         ["Total Cache:"] = "总缓存：",
-        [" sec"] = " 秒",
         [" sec)"] = " 秒）",
+        [" sec"] = " 秒",
         [" fps (specified)"] = " fps（指定）",
         [" fps (estimated)"] = " fps（估计）",
         [" fps"] = " fps",
@@ -1920,10 +1920,11 @@ local function auto_translate_text(text)
         ["HDR10+:"] = "HDR10+：",
         ["PQ(Y):"] = "PQ(Y)：",
         ["Max:"] = "最大：",
-        -- ["in"] = "使用",   -- 已删除
+        -- ["in"] = "使用",   -- 不启用：模糊匹配会破坏包含 "in" 的英文单词（Container, Vision 等）
         
         -- ==================== 视频轨道信息 ====================
         ["Video:"] = "视频：",
+        ["Audio:"] = "音频：",
         ["Image:"] = "图像：",
         ["Frame:"] = "帧：",
         ["Picture Type:"] = "画面类型：",
@@ -1932,6 +1933,9 @@ local function auto_translate_text(text)
         ["GOP"] = "GOP",
         ["SMPTE"] = "SMPTE",
         ["Estimated SMPTE"] = "估计SMPTE",
+        ["GOP Timecode:"] = "GOP时间码：",
+        ["SMPTE Timecode:"] = "SMPTE时间码：",
+        ["Estimated SMPTE Timecode:"] = "估计SMPTE时间码：",
         
         -- ==================== 帧耗时页面 ====================
         ["Frame Timings:"] = "帧耗时：",
@@ -1947,6 +1951,7 @@ local function auto_translate_text(text)
         ["eof"] = "文件尾",
         ["underrun"] = "缓存不足",
         ["inactive"] = "空闲",
+        ["seeking"] = "定位中",
         ["Speed:"] = "速度：",
         ["Total RAM:"] = "总内存：",
         ["Forward RAM:"] = "前向内存：",
@@ -2009,9 +2014,9 @@ local function auto_translate_text(text)
         return result
     end
     
-    -- 模糊匹配
+    -- 模糊匹配（跳过过短的键，防止破坏包含短英文单词的文本）
     for en, zh in pairs(translations) do
-        if text:find(en, 1, true) then
+        if #en >= 3 and text:find(en, 1, true) then
             text = text:gsub(en, zh, 1)
         end
     end
