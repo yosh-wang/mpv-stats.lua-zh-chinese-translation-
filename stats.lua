@@ -2121,3 +2121,868 @@ end
 -- ============================================================
 -- 自动翻译模块结束
 -- ============================================================
+
+
+
+-- ============================================================
+-- 系统 CPU / GPU 占用率获取模块（yosh.wang_20260712）（QQ交流群：1097053691）
+-- ============================================================
+
+local cpu_usage = "N/A"
+local gpu_usages = {}
+local cpu_name = nil
+local gpu_names = {}
+local hw_detected = false
+local stats_refresh_timer = nil
+local update_counter = 0
+local sys_lang = nil
+local nvidia_smi_usage = nil  -- nvidia-smi 最新返回的数值，用于 LUID 归属识别
+
+-- 异步执行系统命令
+local function run_async(cmd_args, callback)
+    mp.command_native_async({
+        name = "subprocess",
+        args = cmd_args,
+        capture_stdout = true,
+        capture_stderr = true,
+        playback_only = false,
+    }, function(success, res)
+        if callback then
+            callback(success, res and (res.stdout or "") or "", res and (res.stderr or "") or "")
+        end
+    end)
+end
+
+-- 强制刷新页面
+local function refresh_display()
+    if display_timer and display_timer:is_enabled() and curr_page then
+        local ass_content = pages[curr_page].f(false)
+        if o.persistent_overlay then
+            mp.set_osd_ass(0, 0, ass_content)
+        else
+            mp.osd_message((o.use_ass and ass_start or "") .. ass_content,
+                           display_timer.oneshot and o.duration or o.redraw_delay + 1)
+        end
+    end
+end
+
+-- 检测系统语言（缓存结果）
+local function detect_sys_lang(callback)
+    if sys_lang then
+        callback(sys_lang)
+        return
+    end
+    run_async({"typeperf", "-q", "Processor"}, function(success, stdout)
+        if success and stdout:match("Processor") then
+            sys_lang = "en"
+            callback("en")
+            return
+        end
+        run_async({"typeperf", "-q", "处理器"}, function(success2, stdout2)
+            if success2 and stdout2:match("处理器") then
+                sys_lang = "zh"
+                callback("zh")
+                return
+            end
+            sys_lang = "en"
+            callback("en")
+        end)
+    end)
+end
+
+-- 判断是否为虚拟 GPU
+local function is_virtual_gpu(name)
+    if not name then return true end
+    local lower = name:lower()
+    local virtual_keywords = {
+        "virtual", "remote", "hyper-v", "hyperv", "microsoft basic",
+        "basic render", "standard vga", "vms3d", "vmware", "virtualbox",
+        "parallels", "citrix", "rdp", "wddm", "render only",
+        "oray", "orayldd", "sunflower", "向日葵"
+    }
+    for _, kw in ipairs(virtual_keywords) do
+        if lower:find(kw, 1, true) then
+            return true
+        end
+    end
+    return false
+end
+
+-- 判断是否为集显（iGPU）
+local function is_integrated_gpu(name)
+    if not name then return false end
+    local lower = name:lower()
+    -- NVIDIA 始终是独显
+    if lower:find("nvidia", 1, true) or lower:find("geforce", 1, true)
+       or lower:find("rtx", 1, true) or lower:find("gtx", 1, true) then
+        return false
+    end
+    -- Intel Arc 是独显
+    if lower:find("arc", 1, true) then return false end
+    -- AMD Radeon RX 系列是独显；Radeon 带 M 后缀或 "Graphics" 是集显
+    if lower:find("radeon", 1, true) then
+        if lower:find("rx ", 1, true) then return false end
+        return true
+    end
+    -- Intel UHD / Iris / HD Graphics 是集显
+    if lower:find("uhd", 1, true) or lower:find("iris", 1, true)
+       or lower:find("hd graphics", 1, true) then
+        return true
+    end
+    return false
+end
+
+-- 检测 CPU / GPU 硬件型号（只检测一次，缓存结果）
+-- 注意：wmic 在 Windows 11 中已被移除，优先使用 PowerShell Get-CimInstance
+local function detect_hardware()
+    if hw_detected then return end
+    hw_detected = true
+
+    local os_name = mp.get_property("platform", "unknown")
+    if os_name ~= "windows" then return end
+
+    -- CPU 型号：优先 CIM，备用注册表
+    run_async({"powershell", "-NoProfile", "-Command",
+               "(Get-CimInstance Win32_Processor).Name"}, function(success, stdout)
+        if success then
+            local name = stdout:match("^(.-)[\r\n]*$")
+            if name and #name > 0 then
+                name = name:gsub("^%s+", ""):gsub("%s+$", "")
+                cpu_name = name
+                refresh_display()
+                return
+            end
+        end
+        -- 备用：注册表
+        run_async({"reg", "query", "HKLM\\HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0", "/v", "ProcessorNameString"}, function(success2, stdout2)
+            if success2 then
+                local name2 = stdout2:match("ProcessorNameString%s+REG_SZ%s+(.-)[\r\n]")
+                if name2 and #name2 > 0 then
+                    name2 = name2:gsub("^%s+", ""):gsub("%s+$", "")
+                    cpu_name = name2
+                    refresh_display()
+                end
+            end
+        end)
+    end)
+
+    -- GPU 型号：优先 CIM（收集所有真实 GPU），备用注册表
+    run_async({"powershell", "-NoProfile", "-Command",
+               "Get-CimInstance Win32_VideoController | Select-Object -ExpandProperty Name"}, function(success, stdout)
+        local found = {}
+        if success then
+            for name in stdout:gmatch("[^\r\n]+") do
+                name = name:gsub("^%s+", ""):gsub("%s+$", "")
+                if #name > 0 and not is_virtual_gpu(name) then
+                    local dup = false
+                    for _, n in ipairs(found) do
+                        if n == name then dup = true; break end
+                    end
+                    if not dup then
+                        table.insert(found, name)
+                    end
+                end
+            end
+        end
+        if #found > 0 then
+            gpu_names = found
+            -- 排序：集显在前，独显在后
+            table.sort(gpu_names, function(a, b)
+                local a_int = is_integrated_gpu(a)
+                local b_int = is_integrated_gpu(b)
+                if a_int ~= b_int then return a_int end
+                return false
+            end)
+            for _, n in ipairs(gpu_names) do
+                gpu_usages[n] = "N/A"
+            end
+            refresh_display()
+            return
+        end
+        -- 备用：注册表（遍历 0000、0001、0002... 检测所有 GPU）
+        local reg_base = "HKLM\\SYSTEM\\CurrentControlSet\\Control\\Class\\{4d36e968-e325-11ce-bfc1-08002be10318}"
+        local found_reg = {}
+        local function probe_reg_gpu(idx)
+            local subkey = string.format("%04d", idx)
+            run_async({"reg", "query", reg_base .. "\\" .. subkey, "/v", "DriverDesc"}, function(success3, stdout3)
+                if success3 then
+                    local name3 = stdout3:match("DriverDesc%s+REG_SZ%s+(.-)[\r\n]")
+                    if name3 and #name3 > 0 then
+                        name3 = name3:gsub("^%s+", ""):gsub("%s+$", "")
+                        if #name3 > 0 and not is_virtual_gpu(name3) then
+                            local dup = false
+                            for _, n in ipairs(found_reg) do
+                                if n == name3 then dup = true; break end
+                            end
+                            if not dup then
+                                table.insert(found_reg, name3)
+                            end
+                        end
+                        probe_reg_gpu(idx + 1)
+                        return
+                    end
+                end
+                if #found_reg > 0 then
+                    gpu_names = found_reg
+                    -- 排序：集显在前，独显在后
+                    table.sort(gpu_names, function(a, b)
+                        local a_int = is_integrated_gpu(a)
+                        local b_int = is_integrated_gpu(b)
+                        if a_int ~= b_int then return a_int end
+                        return false
+                    end)
+                    for _, n in ipairs(gpu_names) do
+                        gpu_usages[n] = "N/A"
+                    end
+                    refresh_display()
+                end
+            end)
+        end
+        probe_reg_gpu(0)
+    end)
+end
+
+-- ============================================================
+-- CPU 占用率获取（Windows）
+-- ============================================================
+
+-- 方案1：CIM（兼容 Windows 10+，wmic 在 Win11 中已移除）
+local function update_cpu_cim(callback)
+    run_async({"powershell", "-NoProfile", "-Command",
+               "(Get-CimInstance Win32_Processor).LoadPercentage"}, function(success, stdout)
+        if success then
+            local load = stdout:match("(%d+)")
+            if load and tonumber(load) and tonumber(load) <= 100 then
+                callback(load)
+                return
+            end
+        end
+        callback(nil)
+    end)
+end
+
+-- 方案2：typeperf（稳定，支持中英文）
+local function update_cpu_typeperf(callback)
+    detect_sys_lang(function(lang)
+        local counter = lang == "zh"
+            and "\\处理器(_Total)\\%% 处理器时间"
+            or "\\Processor(_Total)\\%% Processor Time"
+        run_async({"typeperf", counter, "-sc", "1"}, function(success, stdout)
+            if success then
+                local load = stdout:match(",\"(%d+%.?%d*)\"")
+                if load and tonumber(load) and tonumber(load) <= 100 then
+                    callback(load)
+                    return
+                end
+            end
+            -- 再试另一种语言
+            local counter2 = lang == "zh"
+                and "\\Processor(_Total)\\%% Processor Time"
+                or "\\处理器(_Total)\\%% 处理器时间"
+            run_async({"typeperf", counter2, "-sc", "1"}, function(success2, stdout2)
+                if success2 then
+                    local load2 = stdout2:match(",\"(%d+%.?%d*)\"")
+                    if load2 and tonumber(load2) and tonumber(load2) <= 100 then
+                        callback(load2)
+                        return
+                    end
+                end
+                callback(nil)
+            end)
+        end)
+    end)
+end
+
+-- 方案3：PowerShell Get-Counter（最后备选）
+local function update_cpu_powershell(callback)
+    detect_sys_lang(function(lang)
+        local counter = lang == "zh"
+            and "\\处理器(_Total)\\% 处理器时间"
+            or "\\Processor(_Total)\\% Processor Time"
+        run_async({"powershell", "-NoProfile", "-Command",
+            "Get-Counter '" .. counter .. "' -ErrorAction SilentlyContinue | Select-Object -ExpandProperty CounterSamples | Select-Object -ExpandProperty CookedValue"
+        }, function(success, stdout)
+            if success then
+                local load = stdout:match("(%d+%.?%d*)")
+                if load and tonumber(load) and tonumber(load) <= 100 then
+                    callback(load)
+                    return
+                end
+            end
+            callback(nil)
+        end)
+    end)
+end
+
+-- ============================================================
+-- GPU 占用率获取（Windows）
+-- ============================================================
+
+-- 方案1：nvidia-smi（只支持 NVIDIA 显卡，最准确）
+local function update_gpu_nvidia(callback)
+    run_async({"nvidia-smi", "--query-gpu=utilization.gpu", "--format=csv,noheader,nounits"}, function(success, stdout)
+        if success then
+            local load = stdout:match("(%d+)")
+            if load and tonumber(load) and tonumber(load) <= 100 then
+                callback(load)
+                return
+            end
+        end
+        callback(nil)
+    end)
+end
+
+-- 方案2：CIM GPU 性能计数器（兼容性最好，与系统语言无关，支持多 GPU 分组）
+-- wmic 在 Win11 中已移除，改用 PowerShell Get-CimInstance
+local function update_gpu_cim(callback)
+    run_async({"powershell", "-NoProfile", "-Command",
+               "Get-CimInstance Win32_PerfFormattedData_GPUPerformanceCounters_GPUEngine | ForEach-Object { Write-Output ($_.Name + '|' + $_.UtilizationPercentage) }"},
+              function(success, stdout)
+        if success then
+            -- 返回所有引擎的原始数据（key=完整引擎名，value=利用率）
+            local engines = {}
+            for line in stdout:gmatch("[^\r\n]+") do
+                local name, util = line:match("^(.-)|(%d+)$")
+                if name and util then
+                    local val = tonumber(util)
+                    if val and val >= 0 and val <= 100 then
+                        name = name:gsub("^%s+", ""):gsub("%s+$", "")
+                        engines[name] = val
+                    end
+                end
+            end
+            if next(engines) then
+                callback(engines)
+                return
+            end
+        end
+        callback(nil)
+    end)
+end
+
+-- 方案3：typeperf GPU 引擎（支持中英文，支持多 GPU 分组）
+-- typeperf CSV 输出：
+--   行1（表头）: "\\COMPUTER\GPU Engine(pid_..._engtype_3D)\Utilization Percentage",...
+--   行2（数据）: "07/12/2026 15:30:45.123","0.000","15.000",...
+--   行3（收尾）: "Exiting..." / "退出代码..."
+-- 需要按列位置匹配表头与数据（跳过第1列=时间戳）
+local function parse_typeperf_engines(stdout)
+    if not stdout then return nil end
+    local lines = {}
+    for line in stdout:gmatch("[^\r\n]+") do
+        lines[#lines + 1] = line
+        if #lines >= 2 then break end
+    end
+    if #lines < 2 then return nil end
+    -- 解析表头列（完整计数器路径）
+    local headers = {}
+    for h in lines[1]:gmatch('"([^"]*)"') do
+        headers[#headers + 1] = h
+    end
+    -- 解析数据列（第1列为时间戳）
+    local values = {}
+    for v in lines[2]:gmatch('"([^"]*)"') do
+        values[#values + 1] = v
+    end
+    -- 按列位置匹配，跳过第1列（表头标签/数据时间戳）
+    local engines = {}
+    for i = 2, #headers do
+        local path = headers[i]
+        local val_str = values[i]
+        if path and val_str then
+            local val = tonumber(val_str)
+            if val and val >= 0 and val <= 100 then
+                local engine_name = path:match("GPU[Ee]ngine%(([^)]+)%)")
+                if engine_name then
+                    engines[engine_name] = val
+                end
+            end
+        end
+    end
+    return next(engines) and engines or nil
+end
+
+local function update_gpu_typeperf(callback)
+    detect_sys_lang(function(lang)
+        local counter = lang == "zh"
+            and "\\GPU 引擎(*)\\利用率百分比"
+            or "\\GPU Engine(*)\\Utilization Percentage"
+        run_async({"typeperf", counter, "-sc", "1"}, function(success, stdout)
+            if success then
+                local engines = parse_typeperf_engines(stdout)
+                if engines then
+                    callback(engines)
+                    return
+                end
+            end
+            -- 再试另一种语言
+            local counter2 = lang == "zh"
+                and "\\GPU Engine(*)\\Utilization Percentage"
+                or "\\GPU 引擎(*)\\利用率百分比"
+            run_async({"typeperf", counter2, "-sc", "1"}, function(success2, stdout2)
+                if success2 then
+                    local engines = parse_typeperf_engines(stdout2)
+                    if engines then
+                        callback(engines)
+                        return
+                    end
+                end
+                callback(nil)
+            end)
+        end)
+    end)
+end
+
+-- 方案4：PowerShell Get-Counter（最后备选，单值）
+local function update_gpu_powershell(callback)
+    detect_sys_lang(function(lang)
+        local counter = lang == "zh"
+            and "\\GPU 引擎(*)\\利用率百分比"
+            or "\\GPU Engine(*)\\Utilization Percentage"
+        local ps_cmd = "Get-Counter '" .. counter .. "' -ErrorAction SilentlyContinue | Select-Object -ExpandProperty CounterSamples | ForEach-Object { $_.CookedValue } | Sort-Object -Descending | Select-Object -First 1"
+        run_async({"powershell", "-NoProfile", "-Command", ps_cmd}, function(success, stdout)
+            if success then
+                local load = stdout:match("(%d+%.?%d*)")
+                if load and tonumber(load) and tonumber(load) <= 100 then
+                    callback(load)
+                    return
+                end
+            end
+            callback(nil)
+        end)
+    end)
+end
+
+-- ============================================================
+-- 统一入口
+-- ============================================================
+
+-- 判断是否为 NVIDIA 显卡
+local function is_nvidia_gpu(name)
+    if not name then return false end
+    local lower = name:lower()
+    return lower:find("nvidia", 1, true)
+        or lower:find("geforce", 1, true)
+        or lower:find("rtx", 1, true)
+        or lower:find("gtx", 1, true)
+end
+
+-- 把分组数据应用到 gpu_usages（跳过 NVIDIA 显卡，N 卡数据以 nvidia-smi 为准）
+-- 引擎名格式：pid_X_luid_0xLOW_0xHIGH_phys_Y_eng_Z_engtype_TYPE
+-- 引擎名不含显卡名称，而是用 LUID 标识 GPU，因此按 LUID 分组
+-- 通过 nvidia-smi 的值匹配找出 NVIDIA 的 LUID 并跳过，其余 LUID 分配给非 N 卡
+local function apply_gpu_usage_map(gpu_map, fmt)
+    if not gpu_map then return false end
+    local updated = false
+    -- 按 LUID 分组，收集每个 LUID 的引擎数据
+    local luid_data = {}      -- luid -> { max_val=0, val_3d=0, has_3d=false, eng_types={} }
+    local luid_order = {}     -- 保持 LUID 出现顺序
+    for engine_name, util in pairs(gpu_map) do
+        local luid = engine_name:match("luid_(0x%x+_0x%x+)") or "unknown"
+        if not luid_data[luid] then
+            luid_data[luid] = { max_val = 0, val_3d = 0, has_3d = false, eng_types = {} }
+            luid_order[#luid_order + 1] = luid
+        end
+        local val = tonumber(util)
+        if val and val >= 0 and val <= 100 then
+            if val > luid_data[luid].max_val then
+                luid_data[luid].max_val = val
+            end
+            -- 记录引擎类型（用于过滤虚拟显卡：虚拟显卡只有 3D 引擎）
+            local etype = engine_name:match("engtype_(.+)$")
+            if etype then luid_data[luid].eng_types[etype:lower()] = true end
+            -- 检查是否是 3D 引擎（engtype_3D）
+            if engine_name:lower():find("engtype_3d", 1, true) then
+                if not luid_data[luid].has_3d or val > luid_data[luid].val_3d then
+                    luid_data[luid].has_3d = true
+                    luid_data[luid].val_3d = val
+                end
+            end
+        end
+    end
+    -- 过滤虚拟显卡 LUID（只有 3D 引擎、没有其他引擎类型的 LUID）
+    -- 如 OrayIddDriver 等间接显示驱动只有 engtype_3D 实例
+    local filtered_order = {}
+    for _, luid in ipairs(luid_order) do
+        local types = luid_data[luid].eng_types
+        local non_3d = false
+        for t, _ in pairs(types) do
+            if t ~= "3d" then non_3d = true; break end
+        end
+        if non_3d or not next(types) then
+            filtered_order[#filtered_order + 1] = luid
+        end
+    end
+    luid_order = filtered_order
+    if #luid_order == 0 then return false end
+
+    -- 计算每个 LUID 的代表利用率（优先 3D 引擎，否则取最大值）
+    local luid_utils = {}
+    for i, luid in ipairs(luid_order) do
+        local d = luid_data[luid]
+        luid_utils[i] = {
+            luid = luid,
+            util = d.has_3d and d.val_3d or d.max_val,
+        }
+    end
+
+    -- 通过 nvidia-smi 值识别 NVIDIA 的 LUID（取差值最小的，容差 ±15）
+    local nvidia_luid_idx = nil
+    -- 参考值：优先使用本轮 nvidia-smi 值，其次使用上一轮残留的 N 卡利用率
+    local nv_ref = nvidia_smi_usage
+    if not nv_ref then
+        for _, gname in ipairs(gpu_names) do
+            if is_nvidia_gpu(gname) and gpu_usages[gname] then
+                local prev = tonumber(gpu_usages[gname]:match("(%d+)"))
+                if prev then
+                    nv_ref = prev
+                    break
+                end
+            end
+        end
+    end
+    if nv_ref and #luid_utils > 1 then
+        local nv_val = tonumber(nv_ref)
+        if nv_val then
+            local best_diff = math.huge
+            for i, lu in ipairs(luid_utils) do
+                local diff = math.abs(lu.util - nv_val)
+                if diff < best_diff then
+                    best_diff = diff
+                    nvidia_luid_idx = i
+                end
+            end
+            if best_diff > 15 then
+                nvidia_luid_idx = nil
+            end
+        end
+    end
+    -- 兜底：有 N 卡但没能通过值匹配识别 LUID 时，跳过利用率最高的 LUID
+    -- （mpv 硬解通常在 N 卡上，负载高于集显）
+    if not nvidia_luid_idx and #luid_utils > 1 then
+        local has_nv = false
+        for _, gname in ipairs(gpu_names) do
+            if is_nvidia_gpu(gname) then has_nv = true; break end
+        end
+        if has_nv then
+            local max_util = -1
+            for i, lu in ipairs(luid_utils) do
+                if lu.util > max_util then
+                    max_util = lu.util
+                    nvidia_luid_idx = i
+                end
+            end
+        end
+    end
+
+    -- 收集非 NVIDIA 显卡名称（按检测顺序）
+    local non_nv_names = {}
+    for _, gname in ipairs(gpu_names) do
+        if not is_nvidia_gpu(gname) then
+            non_nv_names[#non_nv_names + 1] = gname
+        end
+    end
+
+    -- 将非 NVIDIA 的 LUID 分配给非 N 卡（按顺序）
+    local non_nv_idx = 1
+    for i, lu in ipairs(luid_utils) do
+        if i == nvidia_luid_idx then
+            -- 跳过 NVIDIA LUID（已由 nvidia-smi 更新）
+        else
+            if non_nv_idx <= #non_nv_names then
+                local gname = non_nv_names[non_nv_idx]
+                gpu_usages[gname] = fmt and string.format(fmt, lu.util)
+                                   or (tostring(lu.util) .. "%")
+                updated = true
+                non_nv_idx = non_nv_idx + 1
+            elseif #gpu_names == 0 then
+                -- 没检测到型号，记个总的
+                gpu_usages["__total__"] = fmt and string.format(fmt, lu.util)
+                                        or (tostring(lu.util) .. "%")
+                updated = true
+            end
+        end
+    end
+    return updated
+end
+
+-- 获取 CPU 占用率
+local function update_cpu()
+    local os_name = mp.get_property("platform", "unknown")
+
+    if os_name == "windows" then
+        -- 优先级：CIM → typeperf → powershell
+        update_cpu_cim(function(load)
+            if load then
+                cpu_usage = load .. "%"
+                refresh_display()
+            else
+                update_cpu_typeperf(function(load2)
+                    if load2 then
+                        cpu_usage = string.format("%.0f%%", tonumber(load2))
+                        refresh_display()
+                    else
+                        update_cpu_powershell(function(load3)
+                            if load3 then
+                                cpu_usage = string.format("%.0f%%", tonumber(load3))
+                            else
+                                cpu_usage = "N/A"
+                            end
+                            refresh_display()
+                        end)
+                    end
+                end)
+            end
+        end)
+    elseif os_name == "linux" then
+        run_async({"sh", "-c", "top -bn1 | grep 'Cpu(s)' | awk '{print $2}'"}, function(success, stdout)
+            if success then
+                local load = stdout:match("(%d+%.?%d*)")
+                if load then
+                    cpu_usage = load .. "%"
+                else
+                    cpu_usage = "N/A"
+                end
+            else
+                cpu_usage = "N/A"
+            end
+            refresh_display()
+        end)
+    elseif os_name == "darwin" then
+        run_async({"ps", "-A", "-o", "%cpu"}, function(success, stdout)
+            if success then
+                local total = 0
+                for line in stdout:gmatch("[^\r\n]+") do
+                    local num = line:match("^(%d+%.?%d*)")
+                    if num then total = total + tonumber(num) end
+                end
+                if total > 0 then
+                    cpu_usage = string.format("%.1f%%", total)
+                else
+                    cpu_usage = "N/A"
+                end
+            else
+                cpu_usage = "N/A"
+            end
+            refresh_display()
+        end)
+    end
+end
+
+-- 获取 GPU 占用率（CIM → typeperf → powershell 完整回退链）
+local function update_gpu_full_fallback()
+    update_gpu_cim(function(result)
+        if result and type(result) == "table" then
+            apply_gpu_usage_map(result, "%.0f%%")
+            refresh_display()
+        else
+            update_gpu_typeperf(function(result2)
+                if result2 and type(result2) == "table" then
+                    apply_gpu_usage_map(result2, "%.0f%%")
+                    refresh_display()
+                else
+                    update_gpu_powershell(function(load4)
+                        if load4 then
+                            -- 单值兜底：只给还没有有效数据的 GPU 设置值，不覆盖已有数据
+                            for _, gname in ipairs(gpu_names) do
+                                if not gpu_usages[gname] or gpu_usages[gname] == "N/A" then
+                                    gpu_usages[gname] = string.format("%.0f%%", tonumber(load4))
+                                end
+                            end
+                            if #gpu_names == 0 then
+                                gpu_usages["__total__"] = string.format("%.0f%%", tonumber(load4))
+                            end
+                        else
+                            -- 失败时也只清空那些本来就是 N/A 的，不覆盖已有数据
+                            for _, gname in ipairs(gpu_names) do
+                                if not gpu_usages[gname] or gpu_usages[gname] == "N/A" then
+                                    gpu_usages[gname] = "N/A"
+                                end
+                            end
+                            if #gpu_names == 0 then
+                                gpu_usages["__total__"] = "N/A"
+                            end
+                        end
+                        refresh_display()
+                    end)
+                end
+            end)
+        end
+    end)
+end
+
+-- 获取 GPU 占用率
+local function update_gpu()
+    local os_name = mp.get_property("platform", "unknown")
+
+    if os_name == "windows" then
+        -- 先尝试 nvidia-smi（快，只更新 N 卡），然后继续完整回退链更新所有 GPU
+        update_gpu_nvidia(function(load)
+            if load then
+                -- 记录 nvidia-smi 数值，供 apply_gpu_usage_map 做 LUID 归属识别
+                nvidia_smi_usage = tonumber(load) or nil
+                -- nvidia-smi 返回单值，找 NVIDIA 显卡分配
+                local found_nv = false
+                for _, gname in ipairs(gpu_names) do
+                    if is_nvidia_gpu(gname) then
+                        gpu_usages[gname] = load .. "%"
+                        found_nv = true
+                    end
+                end
+                if not found_nv and #gpu_names == 0 then
+                    -- 没检测到型号，记个总的
+                    gpu_usages["__total__"] = load .. "%"
+                end
+                refresh_display()
+            else
+                nvidia_smi_usage = nil
+            end
+            -- 无论 nvidia-smi 是否成功，都继续完整回退链，确保所有 GPU（含 Intel/AMD 集显）都有数据
+            update_gpu_full_fallback()
+        end)
+    elseif os_name == "linux" then
+        run_async({"nvidia-smi", "--query-gpu=utilization.gpu", "--format=csv,noheader,nounits"}, function(success, stdout)
+            if success then
+                local load = stdout:match("(%d+)")
+                if load then
+                    gpu_usages["__total__"] = load .. "%"
+                    refresh_display()
+                    return
+                end
+            end
+            run_async({"sh", "-c", "radeontop --dump - | grep 'gpu' | awk '{print $2}' | head -1"}, function(success2, stdout2)
+                if success2 then
+                    local load2 = stdout2:match("(%d+%.?%d*)")
+                    if load2 then
+                        gpu_usages["__total__"] = string.format("%.0f%%", tonumber(load2))
+                        refresh_display()
+                        return
+                    end
+                end
+                run_async({"sh", "-c", "intel_gpu_top -J | grep 'render' | head -1 | awk '{print $2}'"}, function(success3, stdout3)
+                    if success3 then
+                        local load3 = stdout3:match("(%d+%.?%d*)")
+                        if load3 then
+                            gpu_usages["__total__"] = string.format("%.0f%%", tonumber(load3))
+                        else
+                            gpu_usages["__total__"] = "N/A"
+                        end
+                    else
+                        gpu_usages["__total__"] = "N/A"
+                    end
+                    refresh_display()
+                end)
+            end)
+        end)
+    elseif os_name == "darwin" then
+        run_async({"sh", "-c", "ioreg -l | grep PerformanceStatistics | grep GPU | head -1"}, function(success, stdout)
+            if success then
+                local load = stdout:match("GPU Activity Factor = (%d+)")
+                if load then
+                    gpu_usages["__total__"] = load .. "%"
+                else
+                    gpu_usages["__total__"] = "N/A"
+                end
+            else
+                gpu_usages["__total__"] = "N/A"
+            end
+            refresh_display()
+        end)
+    end
+end
+
+-- 刷新统计数据
+local function refresh_stats()
+    update_counter = update_counter + 1
+    if update_counter % 3 == 0 then
+        update_gpu()
+    end
+    update_cpu()
+end
+
+-- 修改 add_file
+local original_add_file = add_file
+add_file = function(s, print_cache, print_tags)
+    original_add_file(s, print_cache, print_tags)
+
+    if not hw_detected then
+        detect_hardware()
+    end
+
+    if cpu_usage == "N/A" then
+        refresh_stats()
+    end
+
+    -- 显示 CPU（占用率 + 型号，百分比右对齐到 3 字符以对齐后续标签）
+    local cpu_display = cpu_usage ~= "N/A" and cpu_usage or "--%"
+    local cpu_line = "CPU: " .. string.format("%3s", cpu_display)
+    if cpu_name then
+        cpu_line = cpu_line .. "  CPU:" .. cpu_name
+    end
+    append(s, cpu_line, {nl=o.nl, prefix="", prefix_sep=""})
+
+    -- 显示 GPU（每个 GPU 一行）
+    if #gpu_names > 0 then
+        for _, gname in ipairs(gpu_names) do
+            local gutil = gpu_usages[gname] or "N/A"
+            local gpu_display = gutil ~= "N/A" and gutil or "--%"
+            local gpu_line = "GPU: " .. string.format("%3s", gpu_display) .. "  GPU:" .. gname
+            append(s, gpu_line, {nl=o.nl, prefix="", prefix_sep=""})
+        end
+    elseif gpu_usages["__total__"] then
+        local gpu_display = gpu_usages["__total__"] ~= "N/A" and gpu_usages["__total__"] or "--%"
+        local gpu_line = "GPU: " .. string.format("%3s", gpu_display)
+        append(s, gpu_line, {nl=o.nl, prefix="", prefix_sep=""})
+    else
+        append(s, "GPU: " .. string.format("%3s", "--%"), {nl=o.nl, prefix="", prefix_sep=""})
+    end
+end
+
+-- 页面激活时启动定时器
+local original_process_key_binding = process_key_binding
+process_key_binding = function(oneshot)
+    original_process_key_binding(oneshot)
+
+    if display_timer and display_timer:is_enabled() then
+        if not stats_refresh_timer then
+            stats_refresh_timer = mp.add_periodic_timer(1.0, refresh_stats)
+            mp.add_timeout(0.1, refresh_stats)
+        end
+    else
+        if stats_refresh_timer then
+            stats_refresh_timer:stop()
+            stats_refresh_timer = nil
+            update_counter = 0
+        end
+    end
+end
+
+-- 退出时清理
+local original_remove_page_bindings = remove_page_bindings
+remove_page_bindings = function()
+    original_remove_page_bindings()
+    if stats_refresh_timer then
+        stats_refresh_timer:stop()
+        stats_refresh_timer = nil
+        update_counter = 0
+    end
+end
+
+-- 文件切换时重置
+mp.register_event("file-loaded", function()
+    cpu_usage = "N/A"
+    for k, _ in pairs(gpu_usages) do
+        gpu_usages[k] = "N/A"
+    end
+    update_counter = 0
+end)
+
+-- ============================================================
+-- 系统统计模块结束
+-- ============================================================
+
+
+
+
+
+
