@@ -199,6 +199,7 @@ load-stats-overlay=no
 
 ## 📸 预览
 
+<img width="1200" height="675" alt="4b301423580159c070d19ebffa3d679b" src="https://github.com/user-attachments/assets/e8926c21-4c0a-42c2-948a-4b2d5517e25a" />
 <img width="1200" height="675" alt="1" src="https://github.com/user-attachments/assets/3597c982-c51f-47ed-8c20-14d9365ffb37" />
 <img width="1200" height="675" alt="2" src="https://github.com/user-attachments/assets/e5112a5a-2524-4603-a792-fd2f67d0778c" />
 <img width="1200" height="675" alt="3" src="https://github.com/user-attachments/assets/67c45620-3e2b-4206-9fdc-0f30e4e05ad2" />
