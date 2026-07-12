@@ -2016,7 +2016,7 @@ local function auto_translate_text(text)
     
     -- 模糊匹配（跳过过短的键，防止破坏包含短英文单词的文本）
     for en, zh in pairs(translations) do
-        if #en >= 3 and text:find(en, 1, true) then
+        if #en >= 4 and text:find(en, 1, true) then
             text = text:gsub(en, zh, 1)
         end
     end
@@ -2662,6 +2662,15 @@ local function apply_gpu_usage_map(gpu_map, fmt)
             end
         end
     end
+    -- 单 N 卡系统兜底：只有 1 个 LUID 且有 NVIDIA 显卡时，直接将该 LUID 分配给 N 卡
+    if not nvidia_luid_idx and #luid_utils == 1 then
+        for _, gname in ipairs(gpu_names) do
+            if is_nvidia_gpu(gname) then
+                nvidia_luid_idx = 1
+                break
+            end
+        end
+    end
     -- 兜底：有 N 卡但没能通过值匹配识别 LUID 时，跳过利用率最高的 LUID
     -- （mpv 硬解通常在 N 卡上，负载高于集显）
     if not nvidia_luid_idx and #luid_utils > 1 then
@@ -2918,9 +2927,9 @@ add_file = function(s, print_cache, print_tags)
         refresh_stats()
     end
 
-    -- 显示 CPU（占用率 + 型号，百分比右对齐到 3 字符以对齐后续标签）
+    -- 显示 CPU（占用率 + 型号，百分比右对齐到 4 字符以对齐后续标签，兼容 100%）
     local cpu_display = cpu_usage ~= "N/A" and cpu_usage or "--%"
-    local cpu_line = "CPU: " .. string.format("%3s", cpu_display)
+    local cpu_line = "CPU: " .. string.format("%4s", cpu_display)
     if cpu_name then
         cpu_line = cpu_line .. "  CPU:" .. cpu_name
     end
@@ -2931,15 +2940,15 @@ add_file = function(s, print_cache, print_tags)
         for _, gname in ipairs(gpu_names) do
             local gutil = gpu_usages[gname] or "N/A"
             local gpu_display = gutil ~= "N/A" and gutil or "--%"
-            local gpu_line = "GPU: " .. string.format("%3s", gpu_display) .. "  GPU:" .. gname
+            local gpu_line = "GPU: " .. string.format("%4s", gpu_display) .. "  GPU:" .. gname
             append(s, gpu_line, {nl=o.nl, prefix="", prefix_sep=""})
         end
     elseif gpu_usages["__total__"] then
         local gpu_display = gpu_usages["__total__"] ~= "N/A" and gpu_usages["__total__"] or "--%"
-        local gpu_line = "GPU: " .. string.format("%3s", gpu_display)
+        local gpu_line = "GPU: " .. string.format("%4s", gpu_display)
         append(s, gpu_line, {nl=o.nl, prefix="", prefix_sep=""})
     else
-        append(s, "GPU: " .. string.format("%3s", "--%"), {nl=o.nl, prefix="", prefix_sep=""})
+        append(s, "GPU: " .. string.format("%4s", "--%"), {nl=o.nl, prefix="", prefix_sep=""})
     end
 end
 
