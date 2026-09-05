@@ -1,7 +1,8 @@
 # 🎬 MPV Player · 硬核技术交流群
 
-[![QQ Group](https://img.shields.io/badge/QQ群-1097053691-12B7F5?logo=tencent-qq&logoColor=white)](https://qm.qq.com/q/KQZsl4wFmG)
-[![Members](https://img.shields.io/badge/群成员-1300+-4CAF50)](https://qm.qq.com/q/KQZsl4wFmG)
+[![QQ Group](https://img.shields.io/badge/QQ①群-1097053691-12B7F5?logo=tencent-qq&logoColor=white)](https://qm.qq.com/q/KQZsl4wFmG) 
+[![Members](https://img.shields.io/badge/群成员-2000+-4CAF50)](https://qm.qq.com/q/KQZsl4wFmG)          [![QQ Group](https://img.shields.io/badge/QQ②群-1104144778-12B7F5?logo=tencent-qq&logoColor=white)](https://qm.qq.com/q/KDxk01ukwe)
+[![Members](https://img.shields.io/badge/群成员-33+-4CAF50)](https://qm.qq.com/q/KDxk01ukwe)
 
 ---
 > **🎯 mpv · 为画质而生，为技术而狂 · mpv 🎯**
