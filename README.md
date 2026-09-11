@@ -54,7 +54,8 @@
 > [!IMPORTANT]
 > 🚫 **非商业使用声明**
 >
-> 本项目仅供 **个人学习、研究和非商业用途** 使用，**严禁任何形式的商业使用**。
+> 本项目仅供 **个人学习、研究和非商业用途** 使用，**严禁任何形式的商业使用**，
+> 包括但不限于收费、将本脚本打包进收费整合包或付费服务等行为。
 >
 > 📄 详见 [LICENSE.md](LICENSE.md)
 
@@ -81,7 +82,7 @@
 [![GitHub release date](https://img.shields.io/github/release-date/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases)
 [![GitHub downloads (latest)](https://img.shields.io/github/downloads/yosh-wang/mpv-stats.lua-zh-chinese-translation-/latest/total?cacheSeconds=300)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases/latest)
 [![GitHub downloads](https://img.shields.io/github/downloads/yosh-wang/mpv-stats.lua-zh-chinese-translation-/total)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-NonCommercial-red.svg)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE)
 
 <!-- 第四行：提交活动与贡献者 -->
 [![GitHub last commit](https://img.shields.io/github/last-commit/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/commits/main)
@@ -237,7 +238,7 @@ load-stats-overlay=no
 
 ## 📜 开源协议
 
-本项目基于 [MIT License](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE.md) 开源协议发布。
+本项目基于 [非商业使用许可](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE.md) 协议发布，仅供个人学习、研究使用，**严禁商业使用和任何形式的收费**。
 
 ---
 
@@ -267,7 +268,7 @@ load-stats-overlay=no
 [![GitHub release date](https://img.shields.io/github/release-date/yosh-wang/mpv-stats.lua-zh-chinese-translation-)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases)
 [![GitHub downloads](https://img.shields.io/github/downloads/yosh-wang/mpv-stats.lua-zh-chinese-translation-/v6.0.0/total?cacheSeconds=300)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases/tag/v6.0.0)
 [![GitHub downloads](https://img.shields.io/github/downloads/yosh-wang/mpv-stats.lua-zh-chinese-translation-/total)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/releases)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE)
+[![License](https://img.shields.io/badge/License-NonCommercial-red.svg)](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE)
 
 
 <!-- 第三行：提交活动与贡献者 -->
@@ -332,7 +333,7 @@ The location for portable packages is: mpv_config\portable_config\scripts\stats.
 
 ## 📜 License / 
 
-This project is released under the [MIT License](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE.md).  
+This project is released under the [Non-Commercial License](https://github.com/yosh-wang/mpv-stats.lua-zh-chinese-translation-/blob/main/LICENSE.md). Strictly no commercial use or charging.  
 
 ---
 
