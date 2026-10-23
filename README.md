@@ -361,7 +361,7 @@ This project is released under the [Non-Commercial License](https://github.com/y
 ## 🙏 致谢
 
 - [mpv 播放器](https://mpv.io/) — 强大而优雅的媒体播放器
-- [@XSHNDWX](https://github.com/XSHNDWX) — 安卓平台技术支持
+- [@XSHNDWX](https://github.com/XSHNDWX) — 安卓平台技术支持 
 - 所有使用和反馈本脚本的朋友们
 
 ---
